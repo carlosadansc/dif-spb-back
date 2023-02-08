@@ -5,7 +5,7 @@ const Logger = require('../Utilities/Logger');
 // CREATE benenficiary
 exports.create = (req, res) => {
     const userId = TokenUtils.decodeToken(req.headers['authorization']).id;
-    const username = TokenUtils.decodeToken(req.headers['authorization']).email;
+    const currentuser = TokenUtils.decodeToken(req.headers['authorization']).username;
 
     const beneficiary = new Beneficiary({
       name: req.body.name.trim(),
@@ -29,18 +29,18 @@ exports.create = (req, res) => {
       signed: req.body.signed,
       deleted: req.body.deleted,
       createdBy: userId,
-      updatedBy: userId,
+      createdAt:  new Date(),
     });
     beneficiary
       .save()
       .then(() => {
         // **** LOG **** //
-        Logger.log('POST', '/beneficiaries/create', username);
+        Logger.log('POST', '/beneficiaries/create', currentuser);
         res.status(200).json("Beneficiary created!")
       })
       .catch((err) => {
         // **** LOG **** //
-        Logger.log('POST', '/beneficiaries/create', username, err, false);
+        Logger.log('POST', '/beneficiaries/create', currentuser, err, false);
         res.status(500).json({ error: 'internalError', message: "Error: " + err })
       })
   };

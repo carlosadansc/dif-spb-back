@@ -2,9 +2,9 @@ const router = require("express").Router();
 const UserController = require("../controllers/user.controller");
 
 // LOGIN user
-router.post('/auth', UserController.login);
+router.post('/users/signin', UserController.signin);
 // CREATE user
-router.post("/users/signup", UserController.create);
+router.post("/users/signup", UserController.signup);
 // UPDATE user
 router.put("/users/:id", UserController.update);
 // DELETE user

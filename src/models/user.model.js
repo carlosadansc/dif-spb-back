@@ -6,8 +6,11 @@ const UserSchema = new mongoose.Schema({
   lastname: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  userType: { type: String, required: true },
   active: { type: Boolean, required: true, default: true },
   deleted: { type: Boolean, required: true, default: false },
+  createdBy: { type: String, required: true },
+  updatedBy: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 })
