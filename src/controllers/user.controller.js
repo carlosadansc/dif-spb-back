@@ -2,8 +2,8 @@ const User = require('../models/user.model.js');
 const jwtConfig = require('../config/jwt.config.js');
 const tokenUtils = require('../utils/TokenUtils');
 const logger = require('../utils/Logger');
-const httpStatus = require('../common/HttpStatusCodes')
-const errorCode = require('../common/ErroCodes')
+const httpStatus = require('../common/HttpStatusCodes');
+const errorCode = require('../common/ErroCodes');
 const jwt = require("jsonwebtoken");
 
 // SIGNIN user
@@ -21,7 +21,7 @@ exports.signin = (req, res) => {
           logger.log('POST', '/users/signin', username, err, false);
           return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0000, err] });
         } else if (isMatch) {
-          const token = jwt.sign({ id: user._id, username: user.username }, jwtConfig.secretKey, { expiresIn: jwtConfig.jwtExpiration });
+          const token = jwt.sign({ id: user._id, username: user.username, userType: user.userType }, jwtConfig.secretKey, { expiresIn: jwtConfig.jwtExpiration });
           const userInfo = {
             id: user._id,
             name: user.name,
@@ -64,6 +64,7 @@ exports.signup = (req, res) => {
   user
     .save()
     .then(() => {
+      user.password = "";
       // **** LOG **** //
       logger.log('POST', '/users/signup', currentuser);
       res.status(httpStatus.CREATED).send({ data: user, errors: [] });
@@ -71,7 +72,7 @@ exports.signup = (req, res) => {
     .catch((err) => {
       // **** LOG **** //
       logger.log('POST', '/users/signup', currentuser, err, false);
-      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, err] })
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [err.code == 11000 ? errorCode.ERR0007 : errorCode.ERR0000] })
     })
 }
 
