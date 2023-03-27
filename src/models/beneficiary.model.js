@@ -16,10 +16,11 @@ const BeneficiarySchema = new mongoose.Schema({
   medicalService: { type: String, required: false }, //catalogo: ISSSTE, IMSS, INSABI, NINGUNO
   civilStatus: { type: String, required: false }, //CASADO, SOLTERO, VIUDO, UNION_LIBRE
   scholarship: { type: String, required: false }, // BASICA, MEDIA, MEDIA SUPERIOR, LICENCIATURA, POSGRADO
+  income: { type: Number, required: false },
 
   //Address
   address: {
-    communityType: { type: String, required: false }, // RURAL, UNRANO (2 opciones)
+    communityType: { type: String, required: false }, // RURAL, URBANA (2 opciones)
     delegation: { type: String, required: false }, //catalogo 
     subdelegation: { type: String, required: false }, //catalogo 
     street: { type: String, required: false },
@@ -32,13 +33,15 @@ const BeneficiarySchema = new mongoose.Schema({
   },
 
   //socioeconomic status
-  spouse: {
+  // Tutor or spouse data
+  spouseOrTutor: {
     fullname: { type: String, required: false },
     age: { type: Number, required: false },
     phone: { type: String, required: false },
     work: { type: String, required: false },
-    incoming: { type: Number, required: false },
+    income: { type: Number, required: false },
     comments: { type: String, required: false },
+    relationship: { type: String, required: false } // SPOUSE OR TUTOR
   },
 
   home: {
@@ -67,7 +70,8 @@ const BeneficiarySchema = new mongoose.Schema({
     otherExpenses: { type: Number, required: false, default: 0.0 }
   },
 
-  families: [{ type: mongoose.Schema.Types.ObjectId, ref: 'families', autopopulate: true }],
+  families: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Family', autopopulate: true }],
+  contributions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contribution', autopopulate: true }],
 
   //Others
   active: { type: Boolean, required: false, default: true },
@@ -77,5 +81,7 @@ const BeneficiarySchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 })
+
+BeneficiarySchema.plugin(require('mongoose-autopopulate'))
 
 module.exports = mongoose.model('Beneficiary', BeneficiarySchema)

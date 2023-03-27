@@ -1,34 +1,32 @@
-const Family = require('../models/family.model');
+const Event = require('../models/event.model');
 const tokenUtils = require('../utils/TokenUtils');
 const logger = require('../utils/Logger');
 const httpStatus = require('../common/HttpStatusCodes')
 const errorCode = require('../common/ErroCodes')
-
-// CREATE family
+// CREATE event
 exports.create = (req, res) => {
     const createdBy = tokenUtils.decodeToken(req.headers['authorization']).id;
     const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username;
-    const { name, lastname, age, phone, relationship } = req.body;
+    const { type, subject, canalization, comments } = req.body;
 
-    const family = new Family({
-        name,
-        lastname,
-        age,
-        phone,
-        relationship,
+    const event = new Event({
+        type,
+        subject,
+        canalization,
+        comments,
         createdBy,
         createdAt: new Date(),
     });
-    family
+    event
         .save()
         .then(() => {
             // **** LOG **** //
-            logger.log('POST', '/family/create', currentuser);
-            res.status(httpStatus.OK).json({ data: family, errors: [], })
+            logger.log('POST', '/event/create', currentuser);
+            res.status(httpStatus.OK).json({ data: event, errors: [], })
         })
         .catch((err) => {
             // **** LOG **** //
-            logger.log('POST', '/family/create', currentuser, err, false);
+            logger.log('POST', '/event/create', currentuser, err, false);
             return res.status(httpStatus.UNAUTHORIZED).send({ data: {}, errors: [errorCode.ERR0000] });
         })
 };

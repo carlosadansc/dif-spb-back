@@ -12,13 +12,13 @@ exports.signin = (req, res) => {
   User.findOne({ username }, (err, user) => {
     if (err) {
       // **** LOG **** //
-      logger.log('POST', '/users/signin', username, err, false);
+      logger.log('POST', '/user/signin', username, err, false);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0000, err] });
     } else if (user) {
       user.comparePassword(req.body.password, (err, isMatch) => {
         if (err) {
           // **** LOG **** //
-          logger.log('POST', '/users/signin', username, err, false);
+          logger.log('POST', '/user/signin', username, err, false);
           return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0000, err] });
         } else if (isMatch) {
           const token = jwt.sign({ id: user._id, username: user.username, userType: user.userType }, jwtConfig.secretKey, { expiresIn: jwtConfig.jwtExpiration });
@@ -30,17 +30,17 @@ exports.signin = (req, res) => {
             userType: user.userType,
           }
           // **** LOG **** //
-          logger.log('POST', '/users/signin', username);
-          res.status(httpStatus.ACCEPTED).send({ data: { token: token, user: userInfo }, errors: [], });
+          logger.log('POST', '/user/signin', username);
+          res.status(httpStatus.OK).send({ data: { token: token, user: userInfo }, errors: [], });
         } else {
           // **** LOG **** //
-          logger.log('POST', '/users/signin', username, errorCode.ERR0017, false);
+          logger.log('POST', '/user/signin', username, errorCode.ERR0017.title, false);
           return res.status(httpStatus.UNAUTHORIZED).send({ data: {}, errors: [errorCode.ERR0017], });
         }
       });
     } else {
       // **** LOG **** //
-      logger.log('POST', '/users/signin', username, errorCode.ERR0001, false);
+      logger.log('POST', '/user/signin', username, errorCode.ERR0001.title, false);
       return res.status(httpStatus.NOT_FOUND).send({ data: {}, errors: [errorCode.ERR0001], });
     }
   });
@@ -66,12 +66,12 @@ exports.signup = (req, res) => {
     .then(() => {
       user.password = "";
       // **** LOG **** //
-      logger.log('POST', '/users/signup', currentuser);
+      logger.log('POST', '/user/signup', currentuser);
       res.status(httpStatus.CREATED).send({ data: user, errors: [] });
     })
     .catch((err) => {
       // **** LOG **** //
-      logger.log('POST', '/users/signup', currentuser, err, false);
+      logger.log('POST', '/user/signup', currentuser, err, false);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [err.code == 11000 ? errorCode.ERR0007 : errorCode.ERR0000] })
     })
 }
@@ -95,12 +95,12 @@ exports.update = (req, res) => {
   User.updateOne({ _id: id }, { $set: user })
     .then((user) => {
       // **** LOG **** //
-      logger.log('UPDATE', `/users/${id}`, currentuser);
+      logger.log('UPDATE', `/user/${id}`, currentuser);
       res.status(httpStatus.OK).send({ data: user, errors: [] });
     })
     .catch((err) => {
       // **** LOG **** //
-      logger.log('UPDATE', `/users/${id}`, currentuser, err, false);
+      logger.log('UPDATE', `/user/${id}`, currentuser, err, false);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, err] })
     })
 }
@@ -112,12 +112,12 @@ exports.delete = (req, res) => {
   User.deleteOne({ _id: id })
     .then((user) => {
       // **** LOG **** //
-      logger.log('DELETE', `/users/${id}`, currentuser);
+      logger.log('DELETE', `/user/${id}`, currentuser);
       res.status(httpStatus.OK).send({ data: user, errors: [] });
     })
     .catch((err) => {
       // **** LOG **** //
-      logger.log('DELETE', `/users/${id}`, currentuser, err, false);
+      logger.log('DELETE', `/user/${id}`, currentuser, err, false);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, err] })
     })
 }
@@ -145,12 +145,34 @@ exports.getUser = (req, res) => {
   User.findById(id)
     .then((user) => {
       // **** LOG **** //
-      logger.log('GET', `/users/${id}`, currentuser);
+      logger.log('GET', `/user/${id}`, currentuser);
       res.status(httpStatus.OK).send({ data: user, errors: [] });
     })
     .catch((err) => {
       // **** LOG **** //
-      logger.log('GET', `/users/${id}`, currentuser, err, false);
+      logger.log('GET', `/user/${id}`, currentuser, err, false);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, err] })
+    })
+}
+
+// GET simple data user by id
+exports.getUserSimple = (req, res) => {
+  const { id } = req.params;
+  const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username;
+  User.findById(id)
+    .then((user) => {
+      const simpleUser = {
+        name: user.name,
+        lastname: user.lastname,
+        username: user.username
+      }
+      // **** LOG **** //
+      logger.log('GET', `/user/${id}`, currentuser);
+      res.status(httpStatus.OK).send({ data: simpleUser, errors: [] });
+    })
+    .catch((err) => {
+      // **** LOG **** //
+      logger.log('GET', `/user/${id}`, currentuser, err, false);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, err] })
     })
 }

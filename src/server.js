@@ -5,6 +5,10 @@ const cors = require('cors');
 const UserRoutes = require('./routes/user.routes');
 const BeneficiaryRoutes = require('./routes/beneficiary.routes');
 const FamilyRoutes = require('./routes/family.routes');
+const ContributionItemRoutes = require('./routes/contribution_item.routes');
+const ContributionRoutes = require('./routes/contribution.routes');
+const EventRoutes = require('./routes/event.routes');
+
 
 const app = express();
 
@@ -17,6 +21,9 @@ app.get('/', (req, res) => res.json({ message: 'Welcome DIF Sistema Integral Pad
 app.use(UserRoutes);
 app.use(BeneficiaryRoutes);
 app.use(FamilyRoutes);
+app.use(ContributionItemRoutes);
+app.use(ContributionRoutes);
+app.use(EventRoutes);
 
 // MONGODB CONNECTION
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
