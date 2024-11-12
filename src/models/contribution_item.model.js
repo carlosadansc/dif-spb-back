@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const ContributionItemSchema = new mongoose.Schema({
-    category: { type: String, required: true }, // ORTOPEDICO, DESPENSA, PAÑALES, TOALLAS HUMEDAS, EXTRAORDINARIO
+    category: { type: String, required: true }, // ORTOPEDICO, DESPENSA, PAÑALES, TOALLAS HUMEDAS, EXTRAORDINARIO, CONSULTA
     description: { type: String, required: true },
     approxPrice: {type: Number, required: true },
 

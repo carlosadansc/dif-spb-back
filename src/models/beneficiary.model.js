@@ -2,21 +2,21 @@ const mongoose = require('mongoose')
 
 const BeneficiarySchema = new mongoose.Schema({
   //General
-  name: { type: String, required: false },
-  fatherSurname: { type: String, required: false },
-  motherSurname: { type: String, required: false },
-  age: { type: Number, required: false },
-  birthdate: { type: Date, required: false },
-  birthplace: { type: String, required: false },
-  sex: { type: String, required: false }, //HOMBRE, MUJER
-  curp: { type: String, required: false, unique: true },
-  phone: { type: String, required: false, unique: true },
+  name: { type: String, required: true },
+  fatherSurname: { type: String, required: true },
+  motherSurname: { type: String, required: true },
+  age: { type: Number, required: true },
+  birthdate: { type: Date, required: true },
+  birthplace: { type: String, required: true },
+  sex: { type: String, required: true }, //HOMBRE, MUJER
+  curp: { type: String, required: true, unique: true },
+  phone: { type: String, required: true, unique: true },
   hasDisability: { type: Boolean, required: false, default: false },
   disabilityType: { type: String, required: false },  //catalogo: MOTRIZ, ETC
   medicalService: { type: String, required: false }, //catalogo: ISSSTE, IMSS, INSABI, NINGUNO
   civilStatus: { type: String, required: false }, //CASADO, SOLTERO, VIUDO, UNION_LIBRE
-  scholarship: { type: String, required: false }, // BASICA, MEDIA, MEDIA SUPERIOR, LICENCIATURA, POSGRADO
-  income: { type: Number, required: false },
+  scholarship: { type: String, required: false }, //BASICA, MEDIA, MEDIA SUPERIOR, LICENCIATURA, POSGRADO
+  income: { type: Number, required: false },  //INGRESOS MENSUALES
 
   //Address
   address: {

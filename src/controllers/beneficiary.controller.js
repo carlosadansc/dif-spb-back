@@ -1,7 +1,7 @@
 const Beneficiary = require('../models/beneficiary.model');
 const Families = require('../models/family.model');
 const tokenUtils = require('../utils/TokenUtils');
-const logger = require('../utils/logger');
+const logger = require('../utils/Logger');
 const httpStatus = require('../common/HttpStatusCodes')
 const errorCode = require('../common/ErroCodes')
 
@@ -135,7 +135,6 @@ exports.getBeneficiaries = (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort || 'createdAt';
-  console.log(req.query.sort)
   const search = req.query.search || '';
   const order = req.query.order || 'asc';
   if (userType === 'admin') {
@@ -147,7 +146,6 @@ exports.getBeneficiaries = (req, res) => {
         const totalPages = Math.ceil(totalItems / limit);
         // **** LOG **** //
         logger.log('GET', '/beneficiaries/', username);
-        console.log('Response length: ' + paginatedData.length);
         res.status(httpStatus.OK).json({
           totalItems,
           totalPages,
@@ -168,7 +166,6 @@ exports.getBeneficiaries = (req, res) => {
         const totalPages = Math.ceil(totalItems / limit);
         // **** LOG **** //
         logger.log('GET', '/beneficiaries/', username);
-        console.log('Response length: ' + paginatedData.length);
         res.status(httpStatus.OK).json({
           totalItems,
           totalPages,
@@ -187,9 +184,8 @@ exports.getBeneficiaries = (req, res) => {
   }
 }
 
-// FUNCTION TO GET RESULTS BY SEARCH PARAMETER
+// // FUNCTION TO GET RESULTS BY SEARCH PARAMETER
 function getBeneficiariesByeSearch(search, data) {
-  console.log(search)
   let searchData
   if (search) {
     searchData = data.filter((item) => {
@@ -211,7 +207,7 @@ function getBeneficiariesByeSearch(search, data) {
   return search ? searchData : data;
 }
 
-// FUNCTION TO GET RESULTS BY PARAMETERS
+// // FUNCTION TO GET RESULTS BY PARAMETERS
 function getResultsByParameters(page, limit, sort, order, data) {
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;

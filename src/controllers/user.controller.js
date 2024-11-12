@@ -31,7 +31,7 @@ exports.signin = (req, res) => {
           }
           // **** LOG **** //
           logger.log('POST', '/user/signin', username);
-          res.status(httpStatus.OK).send({ data: { token: token, user: userInfo }, errors: [], });
+          res.status(httpStatus.ACCEPTED).send({ data: { token: token, user: userInfo }, errors: [], });
         } else {
           // **** LOG **** //
           logger.log('POST', '/user/signin', username, errorCode.ERR0017.title, false);
