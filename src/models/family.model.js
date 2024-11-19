@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
 const FamilySchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    lastname: { type: String, required: true },
+    name: { type: String, required: false },
+    lastname: { type: String, required: false },
     age: { type: Number, required: false },
-    phone: { type: String, required: true },
-    relationship: { type: String, required: true }, // ESPOSO, HERMANO, MAMA, PAPA, ETC
+    phone: { type: String, required: false },
+    relationship: { type: String, required: false }, // ESPOSO, HERMANO, MAMA, PAPA, ETC
 
     active: { type: Boolean, required: true, default: true },
     deleted: { type: Boolean, required: true, default: false },

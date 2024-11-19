@@ -30,3 +30,19 @@ exports.create = (req, res) => {
             return res.status(httpStatus.UNAUTHORIZED).send({ data: {}, errors: [errorCode.ERR0000] });
         })
 };
+
+// GET contributionsByType
+exports.getContributionsByCategory = (req, res) => {
+    const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username;
+    ContributionItem.find({ category: req.query.category })
+        .then((contributionItems) => {
+            // **** LOG **** //
+            logger.log('GET', '/contribution-item/by-category?' + req.query.category, currentuser);
+            res.status(httpStatus.OK).json({ data: contributionItems, errors: [] })
+        })
+        .catch((err) => {
+            // **** LOG **** //
+            logger.log('GET', '/contribution-item/by-category/', currentuser, err, false);
+            return res.status(httpStatus.UNAUTHORIZED).send({ data: {}, errors: [errorCode.ERR0000] });
+        })
+};
