@@ -4,10 +4,10 @@ const BeneficiarySchema = new mongoose.Schema({
   //General
   name: { type: String, required: true },
   fatherSurname: { type: String, required: true },
-  motherSurname: { type: String, required: true },
+  motherSurname: { type: String, required: false },
   age: { type: Number, required: true },
-  birthdate: { type: Date, required: true },
-  birthplace: { type: String, required: true },
+  birthdate: { type: Date, required: false },
+  birthplace: { type: String, required: false },
   sex: { type: String, required: true }, //HOMBRE, MUJER
   curp: { type: String, required: true, unique: true },
   phone: { type: String, required: true, unique: true },

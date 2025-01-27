@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const ContributionItemSchema = new mongoose.Schema({
-    category: { type: String, required: true }, // ORTOPEDICO, DESPENSA, PAÑALES, TOALLAS HUMEDAS, EXTRAORDINARIO, CONSULTA
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'ContributionItemCategory',  autopopulate: true },
     description: { type: String, required: true },
     approxPrice: {type: Number, required: true },
 
@@ -13,4 +13,5 @@ const ContributionItemSchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now }
 })
 
+ContributionItemSchema.plugin(require('mongoose-autopopulate'))
 module.exports = mongoose.model('ContributionItem', ContributionItemSchema);

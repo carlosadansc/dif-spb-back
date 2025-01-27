@@ -32,17 +32,37 @@ exports.create = (req, res) => {
 };
 
 // GET contributionsByType
-exports.getContributionsByCategory = (req, res) => {
-    const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username;
-    ContributionItem.find({ category: req.query.category })
-        .then((contributionItems) => {
-            // **** LOG **** //
-            logger.log('GET', '/contribution-item/by-category?' + req.query.category, currentuser);
-            res.status(httpStatus.OK).json({ data: contributionItems, errors: [] })
-        })
-        .catch((err) => {
-            // **** LOG **** //
-            logger.log('GET', '/contribution-item/by-category/', currentuser, err, false);
-            return res.status(httpStatus.UNAUTHORIZED).send({ data: {}, errors: [errorCode.ERR0000] });
-        })
-};
+exports.getContributionItemsByCategory = async (req, res) => { 
+
+    const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username; 
+    const category = req.query.category; 
+    if (!category) { 
+        return res.status(httpStatus.BAD_REQUEST).send({ data: {}, errors: ["La categoría es requerida"] }); 
+    } 
+    await ContributionItem.find({ category: category }).then((contributionItems) => {
+        // **** LOG **** //
+        logger.log('GET', '/contribution-item/by-category?category=' + category, currentuser);
+        res.status(httpStatus.OK).json({ data: contributionItems, errors: [] });
+
+    }).catch((err) => {
+        // **** LOG **** //
+        console.log(err);
+        logger.log('GET', '/contribution-item/by-category/', currentuser, err, false);
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000] });
+})};
+
+
+// exports.getContributionItemsByCategory = (req, res) => {
+//     const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username;
+//     ContributionItem.find({ category: req.query.category })
+//         .then((contributionItems) => {
+//             // **** LOG **** //
+//             logger.log('GET', '/contribution-item/by-category?' + req.query.category, currentuser);
+//             res.status(httpStatus.OK).json({ data: contributionItems, errors: [] })
+//         })
+//         .catch((err) => {
+//             // **** LOG **** //
+//             logger.log('GET', '/contribution-item/by-category/', currentuser, err, false);
+//             return res.status(httpStatus.UNAUTHORIZED).send({ data: {}, errors: [errorCode.ERR0000] });
+//         })
+// };

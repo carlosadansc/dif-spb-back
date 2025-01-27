@@ -14,4 +14,7 @@ router.put("/beneficiary/update", UserMiddleware.verifyUser, BeneficiaryControll
 // GET All beneficiaries
 router.get("/beneficiaries", UserMiddleware.verifyUser, BeneficiaryController.getBeneficiaries);
 
+// GET check beneficiary exists by curp
+router.get("/beneficiary/check-curp/:curp", UserMiddleware.verifyUser, BeneficiaryController.checkCurp);
+
 module.exports = router;

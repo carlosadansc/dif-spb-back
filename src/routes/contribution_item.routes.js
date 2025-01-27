@@ -6,6 +6,6 @@ const UserMiddleware = require("../middlewares/UserMiddleware")
 router.post("/contribution-item/create", UserMiddleware.verifyUser, ContributionItemController.create);
 
 // GET contributionsByType
-router.get("/contribution-item/by-category", UserMiddleware.verifyUser, ContributionItemController.getContributionsByCategory);
+router.get("/contribution-item/by-category", UserMiddleware.verifyUser, ContributionItemController.getContributionItemsByCategory);
 
 module.exports = router;

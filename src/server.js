@@ -4,10 +4,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const UserRoutes = require('./routes/user.routes');
 const BeneficiaryRoutes = require('./routes/beneficiary.routes');
-const FamilyRoutes = require('./routes/family.routes');
+// const FamilyRoutes = require('./routes/family.routes');
 const ContributionItemRoutes = require('./routes/contribution_item.routes');
 const ContributionRoutes = require('./routes/contribution.routes');
-const EventRoutes = require('./routes/event.routes');
+// const EventRoutes = require('./routes/event.routes');
+const ContributionItemCategoryRoutes = require('./routes/contribution_item_category.routes');
 
 
 const app = express();
@@ -20,10 +21,11 @@ app.use(cors())
 app.get('/', (req, res) => res.json({ message: 'Welcome DIF Sistema Integral Padron de Apoyos API 2023' }))
 app.use(UserRoutes);
 app.use(BeneficiaryRoutes);
-app.use(FamilyRoutes);
+// app.use(FamilyRoutes);
 app.use(ContributionItemRoutes);
 app.use(ContributionRoutes);
-app.use(EventRoutes);
+app.use(ContributionItemCategoryRoutes);
+// app.use(EventRoutes);
 
 // MONGODB CONNECTION
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })

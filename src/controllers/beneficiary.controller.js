@@ -100,11 +100,9 @@ exports.create = async (req, res) => {
 // UPDATE beneficiary
 exports.update = (req, res) => {
   const updatedBy = tokenUtils.decodeToken(req.headers["authorization"]).id;
-  const currentuser = tokenUtils.decodeToken(
-    req.headers["authorization"]
-  ).username;
+  const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
   const { filter, update } = req.body;
-
+  console.log(filter, update);
   const beneficiary = {
     ...update,
     updatedBy,
@@ -119,15 +117,8 @@ exports.update = (req, res) => {
     .catch((err) => {
       // **** LOG **** //
       logger.log(
-        "PUT",
-        `/beneficiary/update/${beneficiary._id}`,
-        currentuser,
-        err,
-        false
-      );
-      return res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ data: {}, errors: [errorCode.ERR0000, err] });
+        "PUT",`/beneficiary/update/${beneficiary._id}`,currentuser,err,false);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, err] });
     });
 };
 
@@ -173,13 +164,9 @@ exports.getBeneficiaryById = (req, res) => {
 
 // GET beneficiaries
 exports.getBeneficiaries = (req, res) => {
-  const userType = tokenUtils.decodeToken(
-    req.headers["authorization"]
-  ).userType;
+  const userType = tokenUtils.decodeToken( req.headers["authorization"]).userType;
   const userId = tokenUtils.decodeToken(req.headers["authorization"]).id;
-  const username = tokenUtils.decodeToken(
-    req.headers["authorization"]
-  ).username;
+  const username = tokenUtils.decodeToken(req.headers["authorization"]).username;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort || "createdAt";
@@ -305,3 +292,21 @@ function getResultsByParameters(page, limit, sort, order, data) {
   const paginatedData = sortedData.slice(startIndex, endIndex);
   return paginatedData || [];
 }
+
+// GET check if beneficiary is already registered by curp
+exports.checkCurp = async (req, res) => {
+  const { curp } = req.params;
+  const currentuser = tokenUtils.decodeToken( req.headers["authorization"] ).username;
+
+  try {
+    const beneficiary = await Beneficiary.findOne({ curp });
+    if (beneficiary) {
+      return res.status(httpStatus.OK).send({ data: beneficiary, errors: [] });
+    } else {
+      return res.status(httpStatus.NOT_FOUND).send({ data: {}, errors: [errorCode.ERR0010] });
+    }
+  } catch (err) {
+    logger.log("GET", `/beneficiary/check-curp`, currentuser, err, false);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, err] });
+  }
+};
