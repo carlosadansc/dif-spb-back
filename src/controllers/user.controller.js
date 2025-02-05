@@ -26,6 +26,8 @@ exports.signin = (req, res) => {
             id: user._id,
             name: user.name,
             lastname: user.lastname,
+            position: user.position,
+            area: user.area,
             username: user.username,
             userType: user.userType,
           }
@@ -50,11 +52,13 @@ exports.signin = (req, res) => {
 exports.signup = (req, res) => {
   const userId = tokenUtils.decodeToken(req.headers['authorization']).id;
   const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username;
-  const { name, lastname, username, password, userType } = req.body;
+  const { name, lastname, position, area, username, password, userType } = req.body;
   const createdBy = userId;
   const user = new User({
     name,
     lastname,
+    position,
+    area,
     username,
     password,
     userType,
@@ -81,11 +85,13 @@ exports.update = (req, res) => {
   const { id } = req.params;
   const userId = tokenUtils.decodeToken(req.headers['authorization']).id;
   const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username;
-  const { name, lastname, username, password, userType } = req.body;
+  const { name, lastname, position, area, username, password, userType } = req.body;
   const updatedBy = userId;
   const user = {
     name,
     lastname,
+    position,
+    area,
     username,
     password,
     userType,
@@ -164,6 +170,8 @@ exports.getUserSimple = (req, res) => {
       const simpleUser = {
         name: user.name,
         lastname: user.lastname,
+        position: user.position,
+        area: user.area,
         username: user.username
       }
       // **** LOG **** //

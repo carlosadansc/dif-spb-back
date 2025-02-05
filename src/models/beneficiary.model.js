@@ -9,14 +9,16 @@ const BeneficiarySchema = new mongoose.Schema({
   birthdate: { type: Date, required: false },
   birthplace: { type: String, required: false },
   sex: { type: String, required: true }, //HOMBRE, MUJER
-  curp: { type: String, required: true, unique: true },
-  phone: { type: String, required: true, unique: true },
+  curp: { type: String, required: true },
+  phone: { type: String, required: true },
   hasDisability: { type: Boolean, required: false, default: false },
   disabilityType: { type: String, required: false },  //catalogo: MOTRIZ, ETC
   medicalService: { type: String, required: false }, //catalogo: ISSSTE, IMSS, INSABI, NINGUNO
   civilStatus: { type: String, required: false }, //CASADO, SOLTERO, VIUDO, UNION_LIBRE
   scholarship: { type: String, required: false }, //BASICA, MEDIA, MEDIA SUPERIOR, LICENCIATURA, POSGRADO
   income: { type: Number, required: false },  //INGRESOS MENSUALES
+  occupation: { type: String, required: false }, //catalogo
+  occupationDescription: { type: String, required: false }, 
 
   //Address
   address: {
@@ -39,7 +41,7 @@ const BeneficiarySchema = new mongoose.Schema({
     age: { type: Number, required: false },
     phone: { type: String, required: false },
     work: { type: String, required: false },
-    income: { type: Number, required: false },
+    income: { type: Number, required: false, default: 0.0 },
     comments: { type: String, required: false },
     relationship: { type: String, required: false } // SPOUSE OR TUTOR
   },

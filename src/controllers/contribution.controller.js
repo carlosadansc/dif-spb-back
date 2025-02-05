@@ -48,7 +48,7 @@ exports.create = async (req, res) => {
     const { authorization } = req.headers;
     const { id: createdBy, username: currentuser } =
       tokenUtils.decodeToken(authorization);
-    const { contributionItems, beneficiary, comments, contributionDate } =
+    const { contributionItems, beneficiary, comments, contributionDate, receiver } =
       req.body;
 
     const contribution = new Contribution({
@@ -56,6 +56,7 @@ exports.create = async (req, res) => {
       beneficiary,
       comments,
       contributionDate,
+      receiver,
       createdBy,
       createdAt: new Date(),
     });

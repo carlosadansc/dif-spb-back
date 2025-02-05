@@ -27,6 +27,8 @@ exports.create = async (req, res) => {
     civilStatus,
     scholarship,
     income,
+    occupation,
+    occupationDescription,
     address,
     spouseOrTutor,
     home,
@@ -67,6 +69,8 @@ exports.create = async (req, res) => {
     civilStatus,
     scholarship,
     income,
+    occupation,
+    occupationDescription,
     address,
     spouseOrTutor,
     home,
@@ -102,13 +106,14 @@ exports.update = (req, res) => {
   const updatedBy = tokenUtils.decodeToken(req.headers["authorization"]).id;
   const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
   const { filter, update } = req.body;
-  console.log(filter, update);
+  console.log("Filter:", filter);
+
   const beneficiary = {
     ...update,
     updatedBy,
     updatedAt: new Date(),
   };
-  Beneficiary.findOneAndUpdate(filter, beneficiary)
+  Beneficiary.findByIdAndUpdate(filter, beneficiary, { new: true })
     .then((beneficiary) => {
       // **** LOG **** //
       logger.log("PUT", `/beneficiary/update/${beneficiary._id}`, currentuser);

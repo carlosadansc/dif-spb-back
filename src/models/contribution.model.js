@@ -8,6 +8,7 @@ const ContributionSchema = new mongoose.Schema({
   beneficiary: { type: mongoose.Schema.Types.ObjectId, ref: "Beneficiary" },
   comments: { type: String, required: false },
   contributionDate: { type: Date, required: true, default: Date.now },
+  receiver: { type: String, required: false },
 
   active: { type: Boolean, required: true, default: true },
   deleted: { type: Boolean, required: true, default: false },
