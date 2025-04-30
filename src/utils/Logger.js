@@ -7,7 +7,7 @@ exports.log = (HttpType, route, useremail, error, success = true) => {
 }
 
 function getDateNow() {
-  const datenow = getDate.date();
+  const datenow = getDate.dateForLogs();
   let [date, time] = datenow.split('T');
   time = time.slice(0, 8);
   return { date, time };

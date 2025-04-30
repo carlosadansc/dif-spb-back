@@ -1,52 +1,50 @@
 const User = require('../models/user.model.js');
-const jwtConfig = require('../config/jwt.config.js');
 const tokenUtils = require('../utils/TokenUtils');
 const logger = require('../utils/Logger');
 const httpStatus = require('../common/HttpStatusCodes');
 const errorCode = require('../common/ErroCodes');
-const jwt = require("jsonwebtoken");
+const GetDate = require('../utils/GetDate')
 
 // SIGNIN user
-exports.signin = (req, res) => {
-  const username = req.body.username;
-  User.findOne({ username }, (err, user) => {
-    if (err) {
-      // **** LOG **** //
-      logger.log('POST', '/user/signin', username, err, false);
-      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0000, err] });
-    } else if (user) {
-      user.comparePassword(req.body.password, (err, isMatch) => {
-        if (err) {
-          // **** LOG **** //
-          logger.log('POST', '/user/signin', username, err, false);
-          return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0000, err] });
-        } else if (isMatch) {
-          const token = jwt.sign({ id: user._id, username: user.username, userType: user.userType }, jwtConfig.secretKey, { expiresIn: jwtConfig.jwtExpiration });
-          const userInfo = {
-            id: user._id,
-            name: user.name,
-            lastname: user.lastname,
-            position: user.position,
-            area: user.area,
-            username: user.username,
-            userType: user.userType,
-          }
-          // **** LOG **** //
-          logger.log('POST', '/user/signin', username);
-          res.status(httpStatus.ACCEPTED).send({ data: { token: token, user: userInfo }, errors: [], });
-        } else {
-          // **** LOG **** //
-          logger.log('POST', '/user/signin', username, errorCode.ERR0017.title, false);
-          return res.status(httpStatus.UNAUTHORIZED).send({ data: {}, errors: [errorCode.ERR0017], });
-        }
-      });
-    } else {
-      // **** LOG **** //
-      logger.log('POST', '/user/signin', username, errorCode.ERR0001.title, false);
-      return res.status(httpStatus.NOT_FOUND).send({ data: {}, errors: [errorCode.ERR0001], });
+exports.signin = async (req, res) => {
+  // Validación de entrada
+  if (!req.body.username || !req.body.password) {
+    logger.log('POST', '/user/signin', req.body.username, errorCode.ERR0020.title, false);
+    return res.status(httpStatus.BAD_REQUEST).json({ data: {}, errors: [errorCode.ERR0020] });
+  }
+
+  const { username, password } = req.body;
+  const sanitizedUsername = username.trim().toLowerCase();
+
+  try {
+    // Buscar usuario
+    const user = await User.findOne({ username: sanitizedUsername }).select('+password');
+    
+    if (!user) {
+      logger.log('POST', '/user/signin', sanitizedUsername, errorCode.ERR0001.title, false);
+      return res.status(httpStatus.NOT_FOUND).json({ data: {}, errors: [errorCode.ERR0001] });
     }
-  });
-}
+
+    // Comparar contraseña
+    const isMatch = await user.comparePassword(password);
+    
+    if (!isMatch) {
+      logger.log('POST', '/user/signin', sanitizedUsername, errorCode.ERR0017.title, false);
+      return res.status(httpStatus.UNAUTHORIZED).json({ data: {}, errors: [errorCode.ERR0017] });
+    }
+
+    // Generar token y respuesta
+    const token = tokenUtils.generateJWT(user);
+    const userInfo = tokenUtils.extractUserInfo(user);
+    
+    logger.log('POST', '/user/signin', sanitizedUsername);
+    res.status(httpStatus.ACCEPTED).json({ data: { token, user: userInfo }, errors: [] });
+
+  } catch (err) {
+    logger.log('POST', '/user/signin', sanitizedUsername, err, false);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0000, err.message] });
+  }
+};
 
 // CREATE user
 exports.signup = (req, res) => {
@@ -63,7 +61,7 @@ exports.signup = (req, res) => {
     password,
     userType,
     createdBy,
-    createdAt: new Date()
+    createdAt: GetDate.date()
   });
   user
     .save()
@@ -96,7 +94,7 @@ exports.update = (req, res) => {
     password,
     userType,
     updatedBy,
-    updatedAt: new Date()
+    updatedAt: GetDate.date()
   }
   User.updateOne({ _id: id }, { $set: user })
     .then((user) => {

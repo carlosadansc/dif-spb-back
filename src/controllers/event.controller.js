@@ -3,6 +3,8 @@ const tokenUtils = require('../utils/TokenUtils');
 const logger = require('../utils/Logger');
 const httpStatus = require('../common/HttpStatusCodes')
 const errorCode = require('../common/ErroCodes')
+const GetDate = require('../utils/GetDate')
+
 // CREATE event
 exports.create = (req, res) => {
     const createdBy = tokenUtils.decodeToken(req.headers['authorization']).id;
@@ -15,7 +17,7 @@ exports.create = (req, res) => {
         canalization,
         comments,
         createdBy,
-        createdAt: new Date(),
+        createdAt: GetDate.date(),
     });
     event
         .save()

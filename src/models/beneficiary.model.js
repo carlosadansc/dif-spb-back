@@ -16,9 +16,10 @@ const BeneficiarySchema = new mongoose.Schema({
   medicalService: { type: String, required: false }, //catalogo: ISSSTE, IMSS, INSABI, NINGUNO
   civilStatus: { type: String, required: false }, //CASADO, SOLTERO, VIUDO, UNION_LIBRE
   scholarship: { type: String, required: false }, //BASICA, MEDIA, MEDIA SUPERIOR, LICENCIATURA, POSGRADO
-  income: { type: Number, required: false },  //INGRESOS MENSUALES
+  income: { type: Number, required: false, default: 0.0 },  //INGRESOS MENSUALES
   occupation: { type: String, required: false }, //catalogo
   occupationDescription: { type: String, required: false }, 
+  comments: { type: String, required: false },
 
   //Address
   address: {
@@ -37,12 +38,12 @@ const BeneficiarySchema = new mongoose.Schema({
   //socioeconomic status
   // Tutor or spouse data
   spouseOrTutor: {
+    curp: { type: String, required: false },
     fullname: { type: String, required: false },
     age: { type: Number, required: false },
     phone: { type: String, required: false },
     work: { type: String, required: false },
     income: { type: Number, required: false, default: 0.0 },
-    comments: { type: String, required: false },
     relationship: { type: String, required: false } // SPOUSE OR TUTOR
   },
 
@@ -72,14 +73,14 @@ const BeneficiarySchema = new mongoose.Schema({
     otherExpenses: { type: Number, required: false, default: 0.0 }
   },
 
-  families: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Family', autopopulate: true }],
-  contributions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contribution', autopopulate: true }],
+  families: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Family'}],
+  contributions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Contribution'}],
 
   //Others
   active: { type: Boolean, required: false, default: true },
   deleted: { type: Boolean, required: false, default: false },
-  createdBy: { type: String, required: false },
-  updatedBy: { type: String, required: false },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false, autopopulate: true },
+  updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false, autopopulate: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 })
