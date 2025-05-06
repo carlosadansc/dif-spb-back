@@ -63,13 +63,18 @@ exports.create = async (req, res) => {
     createdAt: GetDate.date(),
   });
 
+  const exist = await Beneficiary.findOne({ curp });
+
+  if (exist) {
+    logger.log("POST", "/beneficiaries/create", currentuser, errorCode.ERR0007.title, false);
+    return res.status(httpStatus.BAD_REQUEST).json({ data: {}, errors: [errorCode.ERR0007] });
+  }
+
   await beneficiary
     .save()
     .then(() => {
       logger.log("POST", "/beneficiaries/create", currentuser);
-      res
-        .status(httpStatus.OK)
-        .json({ data: { beneficiary }, errors: [] });
+      res.status(httpStatus.OK).json({ data: { beneficiary }, errors: [] });
     })
     .catch((err) => {
       logger.log("POST", "/beneficiaries/create", currentuser, err, false);

@@ -62,7 +62,8 @@ exports.getContributionsByBeneficiary = async (req, res) => {
       beneficiary: id, 
       deleted: false, 
       active: true 
-    }).lean(); // Usar lean() para obtener objetos JavaScript planos
+    }).
+    populate('createdBy', 'name lastname position').lean(); // Usar lean() para obtener objetos JavaScript planos
     
     // Para cada contribución, procesamos sus productos/servicios
     for (const contribution of contributions) {
@@ -164,10 +165,13 @@ exports.getContributionSummary = async (req, res) => {
 
     // 1. Construir filtro de fecha
     const dateFilter = {};
-    if (month && year) {
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 1);
+    // Construir filtro de fecha basado en año y mes
+    if (year) {
+      const startDate = new Date(year, month ? month - 1 : 0, 1);
+      const endDate = new Date(year, month ? month : 12, 1);
       dateFilter.contributionDate = { $gte: startDate, $lt: endDate };
+    } else if (month) {
+      throw new Error('No se puede filtrar por mes sin especificar el año');
     }
 
     // 2. Obtener contribuciones como objetos planos (lean)
@@ -261,10 +265,12 @@ exports.getContributionSummaryByCategory = async (req, res) => {
 
     // 2. Construir filtros
     const filters = { active: true, deleted: false };
-    if (month && year) {
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 1);
+    if (year) {
+      const startDate = new Date(year, month ? month - 1 : 0, 1);
+      const endDate = new Date(year, month ? month : 12, 1);
       filters.contributionDate = { $gte: startDate, $lt: endDate };
+    } else if (month) {
+      throw new Error('No se puede filtrar por mes sin especificar el año');
     }
 
     // 3. Pipeline de agregación (versión corregida)
