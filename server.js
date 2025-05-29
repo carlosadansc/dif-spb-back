@@ -2,14 +2,16 @@ require('dotenv').config()
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const UserRoutes = require('./routes/user.routes');
-const BeneficiaryRoutes = require('./routes/beneficiary.routes');
-const familyRoutes = require('./routes/family.routes');
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json');
+const UserRoutes = require('./src/routes/user.routes');
+const BeneficiaryRoutes = require('./src/routes/beneficiary.routes');
+const familyRoutes = require('./src/routes/family.routes');
 // const FamilyRoutes = require('./routes/family.routes');
-const ContributionItemRoutes = require('./routes/product_or_service.routes');
-const ContributionRoutes = require('./routes/contribution.routes');
+const ContributionItemRoutes = require('./src/routes/product_or_service.routes');
+const ContributionRoutes = require('./src/routes/contribution.routes');
 // const EventRoutes = require('./routes/event.routes');
-const ContributionItemCategoryRoutes = require('./routes/category.routes');
+const ContributionItemCategoryRoutes = require('./src/routes/category.routes');
 
 
 
@@ -18,13 +20,13 @@ const app = express();
 // MIDDLEWARE
 app.use(express.json());
 app.use(cors())
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 mongoose.set('strictQuery', false);
 
 // ROUTES
-app.get('/', (req, res) => res.json({ message: 'Welcome DIF Sistema Integral Padron de Apoyos API 2023' }))
+app.get('/', (req, res) => res.json({ message: 'Welcome DIF Sistema Integral Padron de Apoyos API 2024' }))
 app.use(UserRoutes);
 app.use(BeneficiaryRoutes);
-// app.use(FamilyRoutes);
 app.use(ContributionItemRoutes);
 app.use(ContributionRoutes);
 app.use(ContributionItemCategoryRoutes);

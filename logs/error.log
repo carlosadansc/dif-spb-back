@@ -1,0 +1,12 @@
+{"level":"error","message":"GET /beneficiary/check-curp : admin : ERROR : 2025-05-14 15:10:19 - CastError: Cast to ObjectId failed for value \"check-curp\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/check-curp : admin : ERROR : 2025-05-14 15:11:59 - CastError: Cast to ObjectId failed for value \"check-curp\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/check-curp : admin : ERROR : 2025-05-14 15:14:20 - CastError: Cast to ObjectId failed for value \"check-curp\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/check-curp : admin : ERROR : 2025-05-14 15:14:29 - CastError: Cast to ObjectId failed for value \"check-curp\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/check-curp : admin : ERROR : 2025-05-14 15:15:12 - CastError: Cast to ObjectId failed for value \"check-curp\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/check-curp : admin : ERROR : 2025-05-14 15:15:24 - CastError: Cast to ObjectId failed for value \"check-curp\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/check-curp : admin : ERROR : 2025-05-14 15:17:52 - CastError: Cast to ObjectId failed for value \"check-curp\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/check-curp/RASC050729MMCSHNA2 : admin : ERROR : 2025-05-14 15:18:55 - DATABASE_UNAVAILABLE"}
+{"level":"error","message":"GET /beneficiary/check-curp/RASC050729MMCSHNA2 : admin : ERROR : 2025-05-14 15:19:07 - DATABASE_UNAVAILABLE"}
+{"level":"error","message":"POST /user/signin : any : ERROR : 2025-05-14 15:48:14 - NOT_FOUND"}
+{"level":"error","message":"POST /contribution/create : admin : ERROR : 2025-05-19 11:39:05 - ValidationError: contributionDate: La fecha no puede ser futura"}
+{"level":"error","message":"POST /user/signin : admin : ERROR : 2025-05-21 11:29:17 - INVALID_PASSWORD"}

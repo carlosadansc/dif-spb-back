@@ -11,6 +11,9 @@ router.get("/contribution/categories", UserMiddleware.verifyUser, ContributionCo
 // GET contribution by beneficiary
 router.get("/contribution/by-beneficiary/:id", UserMiddleware.verifyUser, ContributionController.getContributionsByBeneficiary)
 
+// GET contribution by beneficiary for export
+router.get("/contribution/by-beneficiary/:id/export", UserMiddleware.verifyUser, ContributionController.getContributionsByBeneficiaryForExport)
+
 // GET contribution years
 router.get("/contribution/years", UserMiddleware.verifyUser, ContributionController.getContributionYears)
 

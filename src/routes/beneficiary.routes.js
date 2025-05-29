@@ -23,8 +23,14 @@ router.get("/beneficiary/check-curp/:curp", UserMiddleware.verifyUser, Beneficia
 // CREATE a family member
 router.post("/beneficiary/:id/family-create", UserMiddleware.verifyUser, BeneficiaryController.createFamily);
 
+// DELETE a family member
+router.delete("/beneficiary/:beneficiaryId/family-delete/:familyId", UserMiddleware.verifyAdmin, BeneficiaryController.deleteFamily);
+
 // GET beneficiary family members
 router.get("/beneficiary/:id/family", UserMiddleware.verifyUser, BeneficiaryController.getBeneficiaryFamily);
+
+// GET beneficiary family members
+router.get("/beneficiary/:id/family-names", UserMiddleware.verifyUser, BeneficiaryController.getBeneficiaryFamilyNames);
 
 // GET generar CURP provisional
 router.get("/generate-curp", UserMiddleware.verifyUser, BeneficiaryController.generateCurp);

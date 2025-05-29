@@ -278,13 +278,13 @@ exports.checkCurp = async (req, res) => {
   try {
     const existingBeneficiary = await Beneficiary.findOne({ curp });
     if (existingBeneficiary) {
-      logger.log("GET", "/beneficiary/check-curp", username);
+      logger.log("GET", `/beneficiary/check-curp/${curp}`, username);
       return res.status(httpStatus.OK).send({data: existingBeneficiary, errors: []});
     }
-    logger.log("GET", "/beneficiary/check-curp", username, errorCode.ERR0010.title, false);
-    return res.status(httpStatus.NOT_FOUND).send({data: {}, errors: [errorCode.ERR0010]});
+    logger.log("GET", `/beneficiary/check-curp/${curp}`, username, errorCode.ERR0001.title);
+    return res.status(httpStatus.OK).send({data: existingBeneficiary, errors: []});
   } catch (error) {
-    logger.log("GET", "/beneficiary/check-curp", username, error, false);
+    logger.log("GET", `/beneficiary/check-curp/${curp}`, username, error, false);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({data: {}, errors: [errorCode.ERR0000, error]});
   }
 };
@@ -294,8 +294,10 @@ exports.createFamily = async (req, res) => {
   const { name, lastname, age, sex, scholarship, phone, relationship, occupation, income } = req.body;
   const createdBy = tokenUtils.decodeToken(req.headers.authorization).id;
   const currentuser = tokenUtils.decodeToken(req.headers.authorization).username;
+  
   try {
     const beneficiary = await Beneficiary.findById(beneficiaryId);
+
     if (!beneficiary) {
       return res.status(httpStatus.NOT_FOUND).send({ data: {}, errors: [errorCode.ERR0001] });
     }
@@ -315,17 +317,67 @@ exports.createFamily = async (req, res) => {
     });
 
     const savedFamily = await family.save();
-    await Beneficiary.findByIdAndUpdate(beneficiaryId, { $push: { families: savedFamily._id } }, { new: true });
-    logger.log("POST", "/beneficiary/family/create", currentuser, savedFamily, true);
+    const updateResult = await Beneficiary.findByIdAndUpdate(
+      beneficiaryId, 
+      { $push: { families: savedFamily._id } }, 
+      { new: true }
+    );
+    
+    logger.log("POST", `/beneficiary/${beneficiaryId}/family-create`, currentuser);
     return res.status(httpStatus.OK).send({ data: savedFamily, errors: [] });
   } catch (error) {
-    logger.log("POST", "/beneficiary/family/create", currentuser, error, false);
+    logger.log("POST", `/beneficiary/${beneficiaryId}/family-create`, currentuser, error, false);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, error] });
   }
 };
 
-// GET familiares y conyuge/tutor de un beneficiario
+exports.deleteFamily = async (req, res) => {
+  const { beneficiaryId, familyId } = req.params;
+  const currentuser = tokenUtils.decodeToken(req.headers.authorization).username;
+
+  try {
+    const family = await Families.findByIdAndDelete(familyId);
+
+    if (!family) {
+      return res.status(httpStatus.NOT_FOUND).send({ data: {}, errors: [errorCode.ERR0001] });
+    }
+
+    await Beneficiary.findByIdAndUpdate(
+      beneficiaryId, 
+      { $pull: { families: familyId } }, 
+      { new: true }
+    );
+
+    logger.log("DELETE", `/beneficiary/${beneficiaryId}/family-delete/${familyId}`, currentuser);
+    return res.status(httpStatus.OK).send({ data: family, errors: [] });
+  } catch (error) {
+    logger.log("DELETE", `/beneficiary/${beneficiaryId}/family-delete/${familyId}`, currentuser, error, false);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, error] });
+  }
+}
+
 exports.getBeneficiaryFamily = async (req, res) => {
+  const currentuser = tokenUtils.decodeToken(req.headers.authorization).username;
+  const { id } = req.params;
+  try {
+    const beneficiary = await Beneficiary.findById(id).populate('families').lean();
+
+    if (!beneficiary) {
+      return res.status(httpStatus.NOT_FOUND).send({ data: {}, errors: [errorCode.ERR0001] });
+    }
+
+    const families = beneficiary.families;
+
+    logger.log("GET", `/beneficiary/${id}/family`, currentuser);
+    return res.status(httpStatus.OK).send({ data: families, errors: [] });
+  } catch (error) {
+    logger.log("GET", `/beneficiary/${id}/family`, currentuser, error, false);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, error] });
+  }
+};
+ 
+// GET nombres de los familiares y conyuge/tutor de un beneficiario
+exports.getBeneficiaryFamilyNames = async (req, res) => {
   const currentuser = tokenUtils.decodeToken(req.headers.authorization).username;
   const { id } = req.params;
 
@@ -351,10 +403,10 @@ exports.getBeneficiaryFamily = async (req, res) => {
         : []),
     ];
 
-    logger.log("GET", `/beneficiary/${id}/family`, currentuser);
+    logger.log("GET", `/beneficiary/${id}/family-names`, currentuser);
     return res.status(httpStatus.OK).send({ data: families, errors: [] });
   } catch (error) {
-    logger.log("GET", `/beneficiary/${id}/family`, currentuser, error, false);
+    logger.log("GET", `/beneficiary/${id}/family-names`, currentuser, error, false);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, error] });
   }
 };

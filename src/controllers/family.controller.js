@@ -41,16 +41,16 @@ exports.create = (req, res) => {
 exports.getFamiliesByBeneficiary = (req, res) => {
     const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username;
     const beneficiaryId = req.params.id;
-    console.log(beneficiaryId)
+    
     Family.find({ beneficiary: beneficiaryId })
         .then((families) => {
             // **** LOG **** //
-            logger.log('GET', '/family/by-beneficiary', currentuser);
+            logger.log('GET', `/family/by-beneficiary/${beneficiaryId}`, currentuser);
             res.status(httpStatus.OK).json({ data: families, errors: [] })
         })
         .catch((err) => {
             // **** LOG **** //
-            logger.log('GET', '/family/by-beneficiary', currentuser, err, false);
+            logger.log('GET', `/family/by-beneficiary/${beneficiaryId}`, currentuser, err, false);
             return res.status(httpStatus.UNAUTHORIZED).send({ data: {}, errors: [errorCode.ERR0000] });
         })
 };
