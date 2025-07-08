@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const BeneficiarySchema = new mongoose.Schema({
   //General
+  photo: { type: String, required: false },
   name: { type: String, required: true },
   fatherSurname: { type: String, required: true },
   motherSurname: { type: String, required: false },

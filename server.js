@@ -12,6 +12,7 @@ const ContributionItemRoutes = require('./src/routes/product_or_service.routes')
 const ContributionRoutes = require('./src/routes/contribution.routes');
 // const EventRoutes = require('./routes/event.routes');
 const ContributionItemCategoryRoutes = require('./src/routes/category.routes');
+const ImageRoutes = require('./src/routes/images.routes');
 
 
 
@@ -20,6 +21,7 @@ const app = express();
 // MIDDLEWARE
 app.use(express.json());
 app.use(cors())
+app.use('/uploads', express.static('uploads'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 mongoose.set('strictQuery', false);
 
@@ -31,6 +33,7 @@ app.use(ContributionItemRoutes);
 app.use(ContributionRoutes);
 app.use(ContributionItemCategoryRoutes);
 app.use(familyRoutes);
+app.use(ImageRoutes);
 // app.use(EventRoutes);
 
 // MONGODB CONNECTION

@@ -10,3 +10,37 @@
 {"level":"error","message":"POST /user/signin : any : ERROR : 2025-05-14 15:48:14 - NOT_FOUND"}
 {"level":"error","message":"POST /contribution/create : admin : ERROR : 2025-05-19 11:39:05 - ValidationError: contributionDate: La fecha no puede ser futura"}
 {"level":"error","message":"POST /user/signin : admin : ERROR : 2025-05-21 11:29:17 - INVALID_PASSWORD"}
+{"level":"error","message":"GET /beneficiary/undefined : admin : ERROR : 2025-07-08 11:25:55 - CastError: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/undefined : admin : ERROR : 2025-07-08 11:42:07 - CastError: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/undefined : admin : ERROR : 2025-07-08 11:42:15 - CastError: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/undefined : admin : ERROR : 2025-07-08 12:37:08 - CastError: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"DELETE /image/delete : anonymous : ERROR : 2025-07-08 12:39:44 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /beneficiary/undefined : admin : ERROR : 2025-07-08 12:41:07 - CastError: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"DELETE /image/delete : anonymous : ERROR : 2025-07-08 12:43:04 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"DELETE /image/delete : anonymous : ERROR : 2025-07-08 12:47:24 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /beneficiary/undefined : admin : ERROR : 2025-07-08 12:50:12 - CastError: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"DELETE /image/delete : anonymous : ERROR : 2025-07-08 12:51:31 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"DELETE /image/delete : anonymous : ERROR : 2025-07-08 13:01:56 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"DELETE /image/delete : anonymous : ERROR : 2025-07-08 13:02:26 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"DELETE /image/delete : anonymous : ERROR : 2025-07-08 13:09:50 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"DELETE /image/delete : anonymous : ERROR : 2025-07-08 13:37:26 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"DELETE /image/delete : anonymous : ERROR : 2025-07-08 13:39:49 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /beneficiary/undefined : admin : ERROR : 2025-07-08 13:42:57 - CastError: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"GET /beneficiary/undefined : admin : ERROR : 2025-07-08 13:45:10 - CastError: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Beneficiary\""}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 13:47:44 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752003842875-corazon.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 13:50:02 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752003842875-corazon.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 13:54:00 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752004202030-GOFM800325MBSNTR09.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 13:56:34 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752004560959-icons8-marcador-48.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 13:58:17 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752004594897-icons8-marcador-48.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:00:51 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752004697020-corazon.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:03:19 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752004851062-icons8-marcador-48.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:14:07 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752004999186-icons8-marcador-48.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:16:09 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752004999186-icons8-marcador-48.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:16:26 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752004999186-icons8-marcador-48.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:20:38 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752005786398-me_bw.jpg'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:28:45 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752006347054-icons8-marcador-48.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:38:43 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752006525948-icons8-marcador-48.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:39:00 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\1752006525948-icons8-marcador-48.png'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:43:21 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\localhost:3000'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:49:01 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\localhost:3000'"}
+{"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:56:26 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\localhost:3000'"}
