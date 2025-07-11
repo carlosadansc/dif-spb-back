@@ -18,7 +18,8 @@ const UserSchema = new mongoose.Schema(
       trim: true,
     },
     area: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Area",
       trim: true,
     },
     username: {
