@@ -11,6 +11,10 @@ const BeneficiarySchema = new mongoose.Schema(
     birthdate: { type: Date, required: false },
     birthplace: { type: String, required: false },
     sex: { type: String, required: true }, //HOMBRE, MUJER
+    isIndigenousCommunity: { type: Boolean, required: false, default: false },
+    indigenousCommunity: { type: String, required: false }, //catalogo
+    isLgbtq: { type: Boolean, required: false, default: false },
+    sexualOrientation: { type: String, required: false }, //catalogo
     curp: { type: String, required: true },
     phone: { type: String, required: true },
     hasDisability: { type: Boolean, required: false, default: false },

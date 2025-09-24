@@ -7,20 +7,31 @@ const errorCode = require("../common/ErroCodes");
 const GetDate = require("../utils/GetDate");
 
 // CREATE category
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   const createdBy = tokenUtils.decodeToken(req.headers["authorization"]).id;
   const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
-  const { productOrServices,name, label, description, color } = req.body;
+  const { productOrServices, name, label, description, color } = req.body;
   const category = new CategoryModel({
     name,
     label,
     description,
     color,
-    productOrServices,
+    productOrServices: [],
     createdBy,
     createdAt: GetDate.date(),
   });
-  category
+
+  // Save all products or services
+  const savedProductsOrServices = await Promise.all(
+    productOrServices.map((productOrService) => {
+      const newProductOrService = new ProductOrServiceModel(productOrService);
+      return newProductOrService.save();
+    })
+  );
+
+  category.productOrServices = savedProductsOrServices;
+
+  await category
     .save()
     .then(() => {
       // **** LOG **** //
@@ -35,12 +46,19 @@ exports.create = (req, res) => {
 };
 
 //UPDATE category
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   const { id } = req.params;
   const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
-  const { name, label, description, color, productOrServices } = req.body;
   const updatedBy = tokenUtils.decodeToken(req.headers["authorization"]).id;
-  CategoryModel.findByIdAndUpdate(id, { $set: { name, label, description, color, productOrServices, updatedBy, updatedAt: GetDate.date() } })
+
+  const { update } = req.body;
+  const updatedCategory = {
+    ...update,
+    updatedBy,
+    updatedAt: GetDate.date()
+  }
+
+  await CategoryModel.findByIdAndUpdate(id, updatedCategory, { new: true })
     .then((category) => {
       // **** LOG **** //
       logger.log("PUT", `/category/update/${id}`, currentuser);
@@ -55,11 +73,10 @@ exports.update = (req, res) => {
 
 // CREATE product or service and add to category
 exports.createProductOrService = async (req, res) => {
+  const createdBy = tokenUtils.decodeToken(req.headers["authorization"]).id;
+  const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
   try {
-    const createdBy = tokenUtils.decodeToken(req.headers["authorization"]).id;
-    const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
     const { category, name, description } = req.body;
-
     // Check if category exists
     const foundCategory = await CategoryModel.findById(category);
     if (!foundCategory) {
@@ -119,3 +136,36 @@ exports.getAllCategories = (req, res) => {
         .send({ data: {}, errors: [errorCode.ERR0000, err] });
     });
 };
+
+exports.quitProductOrService = async (req, res) => {
+  const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
+
+  const { idCategory, idProductOrService } = req.body;
+
+  try {
+    await CategoryModel.findByIdAndUpdate(
+      idCategory, 
+      { $pull: { productOrServices: idProductOrService } },
+      { new: true }
+    );
+
+    await ProductOrServiceModel.findByIdAndUpdate(
+      idProductOrService, 
+      { deleted: true },
+      { new: true }
+    );
+
+    logger.log("POST", "/category/quit-product-or-service", currentuser);
+    return res.status(httpStatus.OK).send({ 
+      data: {}, 
+      errors: [] 
+  });
+
+  } catch (err) {
+    logger.log("POST", "/category/quit-product-or-service", currentuser, err, false);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ 
+      data: {}, 
+      errors: [errorCode.ERR0000, err] 
+    });
+  }
+}

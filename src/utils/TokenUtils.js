@@ -21,12 +21,18 @@ exports.generateJWT = (user) => {
 }
 
 exports.extractUserInfo = (user) => {
+  // Extraer solo la información necesaria del área si existe
+  const areaInfo = user.area ? {
+    id: user.area._id,
+    name: user.area.name
+  } : null;
+
   return {
     id: user._id,
     name: user.name,
     lastname: user.lastname,
     position: user.position,
-    area: user.area,
+    area: areaInfo,  // Usar el objeto areaInfo que contiene solo los campos necesarios
     username: user.username,
     userType: user.userType,
   };

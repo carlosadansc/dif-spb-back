@@ -17,12 +17,27 @@ exports.signin = async (req, res) => {
   const sanitizedUsername = username.trim().toLowerCase();
 
   try {
-    // Buscar usuario
-    const user = await User.findOne({ username: sanitizedUsername }).select('+password');
+    // Buscar usuario con el área poblada
+    const user = await User.findOne({ username: sanitizedUsername, deleted: false })
+      .populate('area', 'name') // Solo traer el campo name del área
+      .select('+password');
     
     if (!user) {
       logger.log('POST', '/user/signin', sanitizedUsername, errorCode.ERR0001.title, false);
       return res.status(httpStatus.NOT_FOUND).json({ data: {}, errors: [errorCode.ERR0001] });
+    }
+
+    // Verificar si el usuario está activo
+    if (!user.active) {
+      logger.log('POST', '/user/signin', sanitizedUsername, 'Intento de inicio de sesión de usuario inactivo', false);
+      return res.status(httpStatus.UNAUTHORIZED).json({ 
+        data: {}, 
+        errors: [{ 
+          code: 'ERR0021', 
+          title: 'Usuario inactivo', 
+          detail: 'El usuario se encuentra inactivo en el sistema' 
+        }] 
+      });
     }
 
     // Comparar contraseña
@@ -42,7 +57,7 @@ exports.signin = async (req, res) => {
 
   } catch (err) {
     logger.log('POST', '/user/signin', sanitizedUsername, err, false);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0000, err.message] });
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0000, err.message] });
   }
 };
 
@@ -83,20 +98,14 @@ exports.update = (req, res) => {
   const { id } = req.params;
   const userId = tokenUtils.decodeToken(req.headers['authorization']).id;
   const currentuser = tokenUtils.decodeToken(req.headers['authorization']).username;
-  const { name, lastname, position, area, username, password, userType } = req.body;
+  const { update } = req.body;
   const updatedBy = userId;
   const user = {
-    name,
-    lastname,
-    position,
-    area,
-    username,
-    password,
-    userType,
+    ...update,
     updatedBy,
     updatedAt: GetDate.date()
   }
-  User.updateOne({ _id: id }, { $set: user })
+  User.findByIdAndUpdate(id, user, { new: true })
     .then((user) => {
       // **** LOG **** //
       logger.log('UPDATE', `/user/${id}`, currentuser);

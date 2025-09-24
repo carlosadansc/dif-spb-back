@@ -8,8 +8,13 @@ const AreaSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       minLength: 4,
-      maxLength: 20, // Añadir límite máximo
-      match: [/^[a-zA-Z0-9]+$/, "Solo caracteres alfanuméricos y espacios"], // Restringir caracteres
+    },
+    parentArea: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Area",
+      trim: true,
+      default: null,
+      required: false,
     },
     active: {
       type: Boolean,

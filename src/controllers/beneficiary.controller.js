@@ -19,6 +19,10 @@ exports.create = async (req, res) => {
     birthdate,
     birthplace,
     sex,
+    isIndigenousCommunity,
+    indigenousCommunity,
+    isLgbtq,
+    sexualOrientation,
     curp,
     phone,
     hasDisability,
@@ -44,6 +48,10 @@ exports.create = async (req, res) => {
     birthdate,
     birthplace,
     sex,
+    isIndigenousCommunity,
+    indigenousCommunity,
+    isLgbtq,
+    sexualOrientation,
     curp,
     phone,
     hasDisability,
@@ -87,9 +95,8 @@ exports.create = async (req, res) => {
 
 // UPDATE beneficiary
 exports.update = (req, res) => {
-  const token = req.headers["authorization"];
-  const userId = tokenUtils.decodeToken(token).id;
-  const username = tokenUtils.decodeToken(token).username;
+  const userId = tokenUtils.decodeToken(req.headers["authorization"]).id;
+  const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
   const { filter, update } = req.body;
   console.log(userId)
   const updatedBeneficiary = {
@@ -101,13 +108,13 @@ exports.update = (req, res) => {
   Beneficiary.findByIdAndUpdate(filter, updatedBeneficiary, { new: true })
     .then((result) => {
       // **** LOG **** //
-      logger.log("PUT", `/beneficiary/update/${result._id}`, username);
+      logger.log("PUT", `/beneficiary/update/${result._id}`, currentuser);
       res.status(httpStatus.OK).send({ data: result, errors: [] });
     })
     .catch((error) => {
       // **** LOG **** //
-      logger.log("PUT", `/beneficiary/update/${filter}`, username, error, false);
-      res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, error] });
+      logger.log("PUT", `/beneficiary/update/${filter}`, currentuser, error, false);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, error.message] });
     });
 };
 
@@ -173,101 +180,136 @@ exports.getBeneficiariesCount = async (req, res) => {
   }
 };
 
-// GET beneficiaries
+// GET beneficiaries with advanced search, filtering, and pagination
 exports.getBeneficiaries = async (req, res) => {
-  const { userType, id: userId, username } = tokenUtils.decodeToken(req.headers["authorization"]);
-  const { page = 1, limit = 10, sort = "createdAt", order = "asc", search = "" } = req.query;
+  try {
+    const { userType, id: userId, username } = tokenUtils.decodeToken(req.headers["authorization"]);
+    const { 
+      page = 1, 
+      limit = 10, 
+      sort = "createdAt", 
+      order = "asc", 
+      search = "",
+      // Additional filter parameters
+      sex,
+      hasDisability,
+      medicalService,
+      civilStatus,
+      scholarship,
+      minAge,
+      maxAge,
+      communityType,
+      delegation,
+      subdelegation,
+      neighborhood,
+      isIndigenousCommunity,
+      isLgbtq,
+      includeDeleted = true
+    } = req.query;
 
-  if (userType === "admin") {
-    const beneficiaries = await Beneficiary.find({ deleted: false });
-    const filteredData = getBeneficiariesBySearch(search, beneficiaries);
-    const paginatedData = getPaginatedResults(
-      page,
-      limit,
-      sort,
-      order,
-      filteredData
-    );
-    const totalItems = filteredData.length;
+    // Build base query
+    const query = {};
+    
+    // Handle soft delete filter
+    if (!includeDeleted) {
+      query.deleted = false;
+    }
+
+    // Apply search filter if provided
+    if (search) {
+      const searchRegex = new RegExp(search, 'i');
+      query.$or = [
+        { name: searchRegex },
+        { fatherSurname: searchRegex },
+        { motherSurname: searchRegex },
+        { curp: searchRegex },
+        { phone: searchRegex },
+        { 'address.street': searchRegex },
+        { 'address.neighborhood': searchRegex },
+        { 'spouseOrTutor.fullname': searchRegex },
+        { 'spouseOrTutor.curp': searchRegex }
+      ];
+    }
+
+    // Apply additional filters if provided
+    if (sex) query.sex = sex;
+    if (hasDisability !== undefined) query.hasDisability = hasDisability === 'true';
+    if (medicalService) query.medicalService = medicalService;
+    if (civilStatus) query.civilStatus = civilStatus;
+    if (scholarship) query.scholarship = scholarship;
+    if (minAge || maxAge) {
+      query.age = {};
+      if (minAge) query.age.$gte = parseInt(minAge);
+      if (maxAge) query.age.$lte = parseInt(maxAge);
+    }
+    if (communityType) query['address.communityType'] = communityType;
+    if (delegation) query['address.delegation'] = delegation;
+    if (subdelegation) query['address.subdelegation'] = subdelegation;
+    if (neighborhood) query['address.neighborhood'] = neighborhood;
+    if (isIndigenousCommunity !== undefined) query.isIndigenousCommunity = isIndigenousCommunity === 'true';
+    if (isLgbtq !== undefined) query.isLgbtq = isLgbtq === 'true';
+
+    // Build sort object
+    const sortOrder = order === 'desc' ? -1 : 1;
+    const sortOptions = {};
+    sortOptions[sort] = sortOrder;
+
+    // Execute queries in parallel
+    const [totalItems, beneficiaries] = await Promise.all([
+      Beneficiary.countDocuments(query),
+      Beneficiary.find(query)
+        .populate('createdBy', 'name username')
+        .populate('updatedBy', 'name username')
+        .sort(sortOptions)
+        .limit(parseInt(limit))
+        .skip((parseInt(page) - 1) * parseInt(limit))
+    ]);
+
     const totalPages = Math.ceil(totalItems / limit);
-
-    logger.log("GET", "/beneficiaries?page=" + page + "&limit=" + limit + "&sort=" + sort + "&order=" + order + "&search=" + search, username);
-    res.status(httpStatus.OK).json({ data: paginatedData, totalItems, totalPages, errors: [] });
-  } else if (userType === "user") {
-    const beneficiaries = await Beneficiary.find({ deleted: false, /*createdBy: userId*/ });
-    const filteredData = getBeneficiariesBySearch(search, beneficiaries);
-    const paginatedData = getPaginatedResults(
-      page,
-      limit,
-      sort,
-      order,
-      filteredData
-    );
-    const totalItems = filteredData.length;
-    const totalPages = Math.ceil(totalItems / limit);
-
-    logger.log("GET", "/beneficiaries?page=" + page + "&limit=" + limit + "&sort=" + sort + "&order=" + order + "&search=" + search, username);
-    res.status(httpStatus.OK).json({ data: paginatedData, totalItems, totalPages, errors: [] });
-  } else {
-    logger.log("GET", "/beneficiaries?page=" + page + "&limit=" + limit + "&sort=" + sort + "&order=" + order + "&search=" + search, username, errorCode.ERR0020.title, false);
-    res.status(httpStatus.FORBIDDEN).json({ data:{}, errors: [errorCode.ERR0020, "User not authorized to do this."] });
+    
+    logger.log("GET", `/beneficiaries?${new URLSearchParams(req.query).toString()}`, username);
+    return res.status(httpStatus.OK).send({
+      data: { 
+        totalItems, 
+        beneficiaries, 
+        totalPages,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          totalItems,
+          totalPages,
+          hasNextPage: page < totalPages,
+          hasPreviousPage: page > 1
+        },
+        filters: {
+          search,
+          sex,
+          hasDisability,
+          medicalService,
+          civilStatus,
+          scholarship,
+          minAge,
+          maxAge,
+          communityType,
+          delegation,
+          subdelegation,
+          neighborhood,
+          isIndigenousCommunity,
+          isLgbtq,
+          includeDeleted
+        }
+      },
+      errors: []
+    });
+  } catch (err) {
+    console.error('Error in getBeneficiaries:', err);
+    logger.log("GET", `/beneficiaries?${new URLSearchParams(req.query).toString()}`, 'system', err.message, false);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      data: {},
+      errors: [errorCode.ERR0000, err.message]
+    });
   }
 };
-
-// // // FUNCTION TO GET RESULTS BY SEARCH PARAMETER
-
-const getBeneficiariesBySearch = (searchTerm, beneficiaries) => {
-  if (!searchTerm) return beneficiaries;
-
-  const lowerSearchTerm = searchTerm.toLowerCase();
-  return beneficiaries.filter(beneficiary => 
-    getBeneficiarySearchFields(beneficiary).some(field => 
-      field && field.toLowerCase().includes(lowerSearchTerm)
-    )
-  );
-};
-
-const getBeneficiarySearchFields = ({ name, fatherSurname, motherSurname, address, sex, age, phone, curp }) => [
-  `${name} ${fatherSurname} ${motherSurname}`,
-  address?.street,
-  address?.extNum,
-  address?.intNum,
-  address?.neighborhood,
-  address?.delegation,
-  address?.subdelegation,
-  address?.cp?.toString(),
-  sex?.toString(),
-  age?.toString(),
-  phone?.toString(),
-  curp
-].filter(Boolean);
-
-// Function to get results by parameters
-function getPaginatedResults(page, limit, sortKey, sortOrder, items) {
-  if (!items?.length) return [];
-  if (!sortKey || !sortOrder) return items.slice((page - 1) * limit, page * limit);
-  
-  const isAscending = sortOrder === "asc";
-  
-  return [...items]
-    .sort((a, b) => {
-      const valueA = a[sortKey];
-      const valueB = b[sortKey];
-      
-      // Handle undefined values
-      if (valueA === undefined && valueB === undefined) return 0;
-      if (valueA === undefined) return isAscending ? 1 : -1;
-      if (valueB === undefined) return isAscending ? -1 : 1;
-      
-      // Compare values
-      return valueA > valueB 
-        ? (isAscending ? 1 : -1) 
-        : valueA < valueB 
-          ? (isAscending ? -1 : 1) 
-          : 0;
-    })
-    .slice((page - 1) * limit, page * limit);
-}
 
 
 // GET check if beneficiary is already registered by CURP
@@ -363,13 +405,19 @@ exports.getBeneficiaryFamily = async (req, res) => {
     const beneficiary = await Beneficiary.findById(id).populate('families').lean();
 
     if (!beneficiary) {
+      logger.log("GET", `/beneficiary/${id}/family`, currentuser, errorCode.ERR0001.title, false);
       return res.status(httpStatus.NOT_FOUND).send({ data: {}, errors: [errorCode.ERR0001] });
     }
 
     const families = beneficiary.families;
 
+    if (!families) {
+      logger.log("GET", `/beneficiary/${id}/family`, currentuser, errorCode.ERR0001.title, false);
+      return res.status(httpStatus.NOT_FOUND).send({ data: {}, errors: [errorCode.ERR0001] });
+    }
+
     logger.log("GET", `/beneficiary/${id}/family`, currentuser);
-    return res.status(httpStatus.OK).send({ data: families, errors: [] });
+    res.status(httpStatus.OK).send({ data: families, errors: [] });
   } catch (error) {
     logger.log("GET", `/beneficiary/${id}/family`, currentuser, error, false);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, error] });
@@ -385,6 +433,7 @@ exports.getBeneficiaryFamilyNames = async (req, res) => {
     const beneficiary = await Beneficiary.findById(id).populate('families').populate('spouseOrTutor');
 
     if (!beneficiary) {
+      logger.log("GET", `/beneficiary/${id}/family-names`, currentuser, errorCode.ERR0001.title, false);
       return res.status(httpStatus.NOT_FOUND).send({ data: {}, errors: [errorCode.ERR0001] });
     }
 
@@ -410,6 +459,8 @@ exports.getBeneficiaryFamilyNames = async (req, res) => {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, error] });
   }
 };
+
+
 
 // POST generar CURP provisional
 exports.generateCurp = async (req, res) => {
@@ -590,4 +641,92 @@ exports.getBeneficiariesBySex = async (req, res) => {
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
-};
+}
+
+// GET beneficiarios por comunidad indígena
+exports.getBeneficiariesByIndigenousCommunity = async (req, res) => {
+  try {
+    const { year, month } = req.query;
+    
+    // Construir el objeto de filtro base
+    const matchStage = { 
+      active: true,
+      deleted: false,
+      indigenousCommunity: { $exists: true, $ne: null } // Solo beneficiarios con comunidad indígena definida
+    };
+
+    // Agregar filtros de año y mes si están presentes
+    if (year) {
+      const startDate = month 
+        ? new Date(parseInt(year), parseInt(month) - 1, 1) // Primer día del mes
+        : new Date(parseInt(year), 0, 1); // Primer día del año
+      
+      const endDate = month
+        ? new Date(parseInt(year), parseInt(month), 1) // Primer día del mes siguiente
+        : new Date(parseInt(year) + 1, 0, 1); // Primer día del año siguiente
+      
+      matchStage.createdAt = {
+        $gte: startDate,
+        $lt: endDate
+      };
+    }
+
+    // 1. Realizar la agregación para contar por comunidad indígena
+    const indigenousCommunityCounts = await Beneficiary.aggregate([
+      { 
+        $match: matchStage
+      },
+      {
+        $group: {
+          _id: "$indigenousCommunity",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          indigenousCommunity: "$_id",
+          count: 1,
+          _id: 0
+        }
+      },
+      { $sort: { indigenousCommunity: 1 } } // Ordenar alfabéticamente
+    ]);
+
+    // 2. Definir los posibles valores de comunidad indígena (según tu modelo)
+    const possibleIndigenousCommunityValues = ['NACIONAL', 'MEXICANO', 'INDIGENA'];
+
+    // 3. Asegurarnos de que todos los valores posibles estén en la respuesta
+    const completeIndigenousCommunityCounts = possibleIndigenousCommunityValues.map(indigenousCommunity => {
+      const found = indigenousCommunityCounts.find(item => item.indigenousCommunity === indigenousCommunity);
+      return {
+        indigenousCommunity: indigenousCommunity,
+        count: found ? found.count : 0
+      };
+    });
+
+    // 4. Calcular el total general
+    const totalBeneficiaries = completeIndigenousCommunityCounts.reduce((sum, item) => sum + item.count, 0);
+
+    // 5. Enviar respuesta
+    res.status(200).json({
+      success: true,
+      data: {
+        stats: completeIndigenousCommunityCounts,
+        totalBeneficiaries: totalBeneficiaries,
+        filters: {
+          year: year || 'all',
+          month: month || 'all'
+        }
+      },
+      timestamp: GetDate.date()
+    });
+
+  } catch (error) {
+    console.error('Error en getBeneficiariesByIndigenousCommunity:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al obtener estadísticas por comunidad indígena',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+}

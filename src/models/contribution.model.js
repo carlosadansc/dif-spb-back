@@ -75,10 +75,18 @@ ContributionSchema.pre("save", async function (next) {
   if (!this.isNew) return next(); // Solo para registros nuevos
 
   try {
-    const user = await mongoose.model("User").findById(this.createdBy);
-    if (!user) throw new Error("Usuario no encontrado");
+    // Poblar el campo 'area' para obtener el documento completo
+    const user = await mongoose.model("User").findById(this.createdBy).populate("area");
+    if (!user) {
+      return next(new Error("Usuario creador no encontrado"));
+    }
 
-    const areaPrefix = user.area.substring(0, 3).toUpperCase(); // Ej: "Logística" → "LOG"
+    // Validar que el usuario tiene un área y que el área tiene un nombre
+    if (!user.area || !user.area.name) {
+      return next(new Error("El usuario no tiene un área asignada o el área no tiene nombre"));
+    }
+
+    const areaPrefix = user.area.name.substring(0, 3).toUpperCase(); // Ej: "Logística" → "LOG"
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");

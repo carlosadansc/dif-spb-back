@@ -11,9 +11,7 @@ const GetDate = require("../utils/GetDate");
 
 exports.create = async (req, res) => {
   const createdBy = tokenUtils.decodeToken(req.headers["authorization"]).id;
-  const currentuser = tokenUtils.decodeToken(
-    req.headers["authorization"]
-  ).username;
+  const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
   try {
     const {
       productOrServices,
@@ -46,10 +44,8 @@ exports.create = async (req, res) => {
     res.status(httpStatus.OK).json({ data: contribution, errors: [] });
   } catch (err) {
     // **** LOG **** //
-    logger.log("POST", "/contribution/create", currentuser, err, false);
-    res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .send({ data: {}, errors: [errorCode.ERR0000] });
+    logger.log("POST", "/contribution/create", currentuser, false);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, err.message] });
   }
 };
 

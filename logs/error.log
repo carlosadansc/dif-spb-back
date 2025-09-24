@@ -44,3 +44,121 @@
 {"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:43:21 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\localhost:3000'"}
 {"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:49:01 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\localhost:3000'"}
 {"level":"error","message":"DELETE /image/delete : admin : ERROR : 2025-07-08 14:56:26 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\localhost:3000'"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:13:06 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:13:23 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:13:24 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:13:27 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:13:29 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:13:33 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:13:34 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:13:35 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:13:40 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:14:03 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /users : anonymous : ERROR : 2025-07-11 12:14:39 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /beneficiaries : carlosanchez : ERROR : 2025-07-11 12:57:48 - TOKEN_EXPIRED"}
+{"level":"error","message":"GET /beneficiaries/by-delegations : admin : ERROR : 2025-09-10 10:47:55 - No se encontraron delegaciones registradas"}
+{"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-10 10:55:28 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-10 10:55:36 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /contribution/create : admin : ERROR : 2025-09-10 10:59:10 - TypeError: Cannot read properties of undefined (reading 'substring')"}
+{"level":"error","message":"POST /contribution/create : admin : ERROR : 2025-09-10 11:00:02 - TypeError: Cannot read properties of undefined (reading 'substring')"}
+{"level":"error","message":"POST /contribution/create : admin : ERROR : 2025-09-10 11:00:57 - TypeError: Cannot read properties of undefined (reading 'substring')"}
+{"level":"error","message":"POST /contribution/create : admin : ERROR : 2025-09-10 11:07:32 - TypeError: Cannot read properties of undefined (reading 'substring')"}
+{"level":"error","message":"POST /contribution/create : admin : ERROR : 2025-09-10 11:09:43 - Cannot read properties of undefined (reading 'substring')"}
+{"level":"error","message":"POST /user/signin : carlosanchez : ERROR : 2025-09-15 11:24:36 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiaries/by-delegations : admin : ERROR : 2025-09-15 11:24:46 - No se encontraron delegaciones registradas"}
+{"level":"error","message":"POST /area/create : admin : ERROR : 2025-09-15 12:40:49 - ReferenceError: GetDate is not defined"}
+{"level":"error","message":"POST /area/create : admin : ERROR : 2025-09-15 12:41:54 - ReferenceError: GetDate is not defined"}
+{"level":"error","message":"POST /area/create : admin : ERROR : 2025-09-15 12:42:15 - ValidationError: name: Solo caracteres alfanuméricos y espacios"}
+{"level":"error","message":"POST /user/signin : carlosanchez : ERROR : 2025-09-18 11:14:22 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : everdugo : ERROR : 2025-09-18 11:20:59 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : everdugo : ERROR : 2025-09-18 11:30:36 - Intento de inicio de sesión de usuario inactivo"}
+{"level":"error","message":"POST /user/signin : everdugo : ERROR : 2025-09-18 12:39:50 - Intento de inicio de sesión de usuario inactivo"}
+{"level":"error","message":"POST /category/create-product-or-service : admin : ERROR : 2025-09-18 14:54:18 - ValidationError: description: La descripción es obligatoria"}
+{"level":"error","message":"GET /beneficiaries/by-delegations : admin : ERROR : 2025-09-18 15:25:55 - No se encontraron delegaciones registradas"}
+{"level":"error","message":"POST /contribution/create : admin : ERROR : 2025-09-18 21:30:39 - Cannot read properties of undefined (reading 'substring')"}
+{"level":"error","message":"POST /contribution/create : admin : ERROR : 2025-09-18 21:34:37 - Cannot read properties of undefined (reading 'substring')"}
+{"level":"error","message":"POST /user/signup : admin : ERROR : 2025-09-18 21:41:39 - MongoServerError: E11000 duplicate key error collection: padronsmdifdb.users index: username_1 dup key: { username: \"admin\" }"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-18 21:43:17 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-18 21:43:25 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-18 21:43:37 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-18 21:43:38 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-18 21:43:39 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-18 21:43:53 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-18 21:43:57 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-18 21:44:04 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-18 21:44:10 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-18 21:44:21 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : aquintero : ERROR : 2025-09-18 22:36:05 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : aquintero : ERROR : 2025-09-18 22:36:31 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : aquintero : ERROR : 2025-09-18 23:18:32 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-18 23:24:26 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-18 23:27:42 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-18 23:37:58 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-19 00:01:01 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-19 09:54:24 - INVALID_PASSWORD"}
+{"level":"error","message":"POST /user/signin : aquintero : ERROR : 2025-09-19 10:40:42 - INVALID_PASSWORD"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:15:54 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:17:25 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:17:31 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:17:36 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:17:41 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:17:47 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:18:06 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:19:15 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:21:11 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:21:19 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:21:23 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:22:01 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:22:05 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:22:24 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:22:32 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:23:07 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:24:11 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:24:54 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:24:59 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:25:18 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:25:22 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:25:33 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:26:10 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:26:15 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:26:26 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:26:50 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:26:57 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:27:05 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d4/family : root : ERROR : 2025-09-19 11:27:12 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d0/family : root : ERROR : 2025-09-19 12:10:07 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d0/family : root : ERROR : 2025-09-19 14:15:43 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d0/family : root : ERROR : 2025-09-19 14:16:20 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d0/family : root : ERROR : 2025-09-19 14:16:33 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiary/68cc790e553245516fa072d0/family : root : ERROR : 2025-09-19 14:24:09 - NOT_FOUND"}
+{"level":"error","message":"PUT /beneficiary/update/68cc790e553245516fa072d1 : root : ERROR : 2025-09-19 14:42:00 - CastError: Cast to date failed for value \"{}\" (type Object) at path \"birthdate\""}
+{"level":"error","message":"GET /beneficiary/update : anonymous : ERROR : 2025-09-19 14:42:07 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"PUT /beneficiary/update/68cc790e553245516fa072d1 : root : ERROR : 2025-09-19 14:45:31 - CastError: Cast to date failed for value \"{}\" (type Object) at path \"birthdate\""}
+{"level":"error","message":"GET /beneficiaries/by-delegations : root : ERROR : 2025-09-19 14:58:30 - No se encontraron delegaciones registradas"}
+{"level":"error","message":"GET /beneficiaries : admin : ERROR : 2025-09-19 15:15:42 - TOKEN_EXPIRED"}
+{"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-19 15:15:48 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiaries?page=1&limit=10 : everdugo : ERROR : 2025-09-19 15:42:11 - UNAUTHORIZED"}
+{"level":"error","message":"POST /user/signin : everdugo : ERROR : 2025-09-19 15:42:22 - INVALID_PASSWORD"}
+{"level":"error","message":"GET /beneficiaries?page=1&limit=10 : everdugo : ERROR : 2025-09-19 15:42:27 - UNAUTHORIZED"}
+{"level":"error","message":"GET /beneficiaries?page=1&limit=10 : everdugo : ERROR : 2025-09-19 15:42:33 - UNAUTHORIZED"}
+{"level":"error","message":"GET /beneficiaries : anonymous : ERROR : 2025-09-19 15:42:43 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /beneficiaries : anonymous : ERROR : 2025-09-19 15:43:12 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"GET /beneficiaries?page=1&limit=10 : everdugo : ERROR : 2025-09-19 15:43:24 - UNAUTHORIZED"}
+{"level":"error","message":"GET /beneficiaries?page=1&limit=10 : everdugo : ERROR : 2025-09-19 15:45:59 - UNAUTHORIZED"}
+{"level":"error","message":"GET /beneficiaries?page=1&limit=10 : everdugo : ERROR : 2025-09-19 15:47:50 - UNAUTHORIZED"}
+{"level":"error","message":"POST /user/signin : aquintero : ERROR : 2025-09-19 15:53:19 - INVALID_PASSWORD"}
+{"level":"error","message":"GET /categories : root : ERROR : 2025-09-22 12:17:40 - MongooseServerSelectionError: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/"}
+{"level":"error","message":"PUT /beneficiary/update/68cdc40b553245516fa075e0 : root : ERROR : 2025-09-22 13:06:22 - CastError: Cast to date failed for value \"{}\" (type Object) at path \"birthdate\""}
+{"level":"error","message":"DELETE /image/delete : root : ERROR : 2025-09-22 13:30:47 - ENOENT: no such file or directory, access 'C:\\Users\\Carlos A\\Documents\\dev-projects\\dif-sipa-back\\uploads\\PATRICIA_DELGADO.JPG'"}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-23 13:04:41 - INVALID_PASSWORD"}
+{"level":"error","message":"GET /beneficiaries?page=1&limit=10 : system : ERROR : 2025-09-23 13:16:46 - Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/"}
+{"level":"error","message":"POST /user/signup : root : ERROR : 2025-09-23 13:24:05 - ValidationError: userType: `USER` is not a valid enum value for path `userType`."}
+{"level":"error","message":"GET /user/signup : anonymous : ERROR : 2025-09-23 13:24:29 - INVALID_OR_NULL_TOKEN"}
+{"level":"error","message":"POST /user/signup : root : ERROR : 2025-09-23 13:25:13 - ValidationError: userType: `USER` is not a valid enum value for path `userType`."}
+{"level":"error","message":"POST /user/signup : root : ERROR : 2025-09-23 13:28:21 - ValidationError: userType: `ADMIN` is not a valid enum value for path `userType`."}
+{"level":"error","message":"POST /user/signup : root : ERROR : 2025-09-23 13:33:45 - ValidationError: name: Cast to string failed for value \"{ '0': 'P', '1': 'U', '2': 'T', '3': 'I', '4': 'T', '5': 'A' }\" (type Object) at path \"name\", lastname: Cast to string failed for value \"{ '0': 'L', '1': 'A', '2': 'C', '3': 'A', '4': 'Y', '5': 'A' }\" (type Object) at path \"lastname\", position: Cast to string failed for value \"{\n  '0': 'J',\n  '1': 'E',\n  '2': 'F',\n  '3': 'A',\n  '4': 'Z',\n  '5': 'A',\n  '6': ' ',\n  '7': 'D',\n  '8': 'E',\n  '9': ' ',\n  '10': 'T',\n  '11': 'O',\n  '12': 'D',\n  '13': 'O',\n  '14': 'S'\n}\" (type Object) at path \"position\""}
+{"level":"error","message":"POST /user/signin : root : ERROR : 2025-09-23 14:15:32 - NOT_FOUND"}
+{"level":"error","message":"GET /beneficiaries/by-delegations : admin : ERROR : 2025-09-23 14:15:44 - No se encontraron delegaciones registradas"}
+{"level":"error","message":"GET /beneficiaries/by-delegations : admin : ERROR : 2025-09-23 14:24:06 - No se encontraron delegaciones registradas"}
+{"level":"error","message":"GET /beneficiaries/by-delegations : admin : ERROR : 2025-09-23 14:24:15 - No se encontraron delegaciones registradas"}
+{"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-24 09:50:47 - NOT_FOUND"}
