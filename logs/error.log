@@ -165,3 +165,5 @@
 {"level":"error","message":"POST /user/signin : aquintero : ERROR : 2025-09-24 22:43:35 - INVALID_PASSWORD"}
 {"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-25 10:00:58 - NOT_FOUND"}
 {"level":"error","message":"POST /user/signin : admin : ERROR : 2025-09-25 10:01:41 - NOT_FOUND"}
+{"level":"error","message":"POST /category/create : root : ERROR : 2025-09-25 10:36:32 - TypeError: Cannot read properties of undefined (reading 'map')"}
+{"level":"error","message":"POST /category/create : root : ERROR : 2025-09-25 10:38:38 - TypeError: Cannot read properties of undefined (reading 'map')"}
