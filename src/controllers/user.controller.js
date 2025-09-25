@@ -54,7 +54,8 @@ exports.signin = async (req, res) => {
     
     logger.log('POST', '/user/signin', sanitizedUsername);
     res.status(httpStatus.ACCEPTED).json({ data: { token, user: userInfo }, errors: [] });
-
+    user.lastLogin = GetDate.date();
+    await user.save();
   } catch (err) {
     logger.log('POST', '/user/signin', sanitizedUsername, err, false);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0000, err.message] });

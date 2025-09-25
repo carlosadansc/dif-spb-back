@@ -46,6 +46,11 @@ const UserSchema = new mongoose.Schema(
       enum: ["admin", "user", "executive"],
       default: "user",
     },
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+      required: false,
+    },
     active: {
       type: Boolean,
       default: true,
