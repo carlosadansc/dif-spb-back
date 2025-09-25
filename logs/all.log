@@ -2891,3 +2891,10 @@
 {"level":"info","message":"GET /contributions/get-all : everdugo : SUCCESS : 2025-09-25 10:44:20"}
 {"level":"info","message":"GET /contribution/summary-by-category?categoryId=&month=undefined&year=undefined : everdugo : SUCCESS : 2025-09-25 10:44:21"}
 {"level":"info","message":"GET /beneficiaries/by-delegations : everdugo : SUCCESS : 2025-09-25 10:44:21"}
+{"level":"info","message":"POST /user/signin : everdugo : SUCCESS : 2025-09-25 10:05:26"}
+{"level":"info","message":"GET /contribution/years : everdugo : SUCCESS : 2025-09-25 10:05:26"}
+{"level":"info","message":"GET /beneficiaries/count : everdugo : SUCCESS : 2025-09-25 10:05:26"}
+{"level":"info","message":"GET /categories : everdugo : SUCCESS : 2025-09-25 10:05:27"}
+{"level":"info","message":"GET /contribution/summary?month=undefined&year=undefined : everdugo : SUCCESS : 2025-09-25 10:05:27"}
+{"level":"info","message":"GET /contribution/summary-by-category?categoryId=&month=undefined&year=undefined : everdugo : SUCCESS : 2025-09-25 10:05:30"}
+{"level":"info","message":"GET /beneficiaries/by-delegations : everdugo : SUCCESS : 2025-09-25 10:05:30"}

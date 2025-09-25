@@ -1,7 +1,7 @@
 const moment = require('moment-timezone');
 
 exports.date = () => {
-  return moment().tz("America/Chihuahua").format();
+  return moment().tz("America/Mazatlan").format();
 }
 
 // exports.date = () => {
