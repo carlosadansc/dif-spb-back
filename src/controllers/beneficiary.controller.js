@@ -1,11 +1,14 @@
 const Beneficiary = require("../models/beneficiary.model");
 const User = require("../models/user.model");
+const Contribution = require("../models/contribution.model");
 const Families = require("../models/family.model");
 const tokenUtils = require("../utils/TokenUtils");
 const GetDate = require("../utils/GetDate");
 const logger = require("../utils/Logger");
 const httpStatus = require("../common/HttpStatusCodes");
 const errorCode = require("../common/ErroCodes");
+const path = require('path');
+const fs = require('fs').promises;
 
 // CREATE beneficiary
 exports.create = async (req, res) => {
@@ -729,4 +732,65 @@ exports.getBeneficiariesByIndigenousCommunity = async (req, res) => {
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
+}
+
+// Delete beneficiary with all related data
+exports.deleteBeneficiaryWithAllRelatedData = async (req, res) => {
+  const { id } = req.params;
+  const currentuser = tokenUtils.decodeToken(req.headers["authorization"])?.username;
+
+  try {
+    const deletedBeneficiary = await Beneficiary.findByIdAndRemove(id);
+    
+    if (!deletedBeneficiary) {
+      return res.status(404).json({
+        success: false,
+        message: `No se encontró el beneficiario con id=${id}.`
+      });
+    }
+
+    
+    await deleteImage(deletedBeneficiary.photo);
+    await Contribution.deleteMany({ beneficiary: id });
+
+    deletedBeneficiary.families.forEach(async familyId => {
+      await Families.findByIdAndRemove(familyId);
+    });
+    
+    logger.log("DELETE", `/beneficiary/${id}`, currentuser);
+    
+    res.status(200).json({
+      success: true,
+      message: "El beneficiario y sus datos relacionados se eliminaron correctamente"
+    });
+    
+  } catch (error) {
+    console.error('Error al eliminar beneficiario:', error);
+    logger.log("DELETE", `/beneficiary/${id}`, currentuser, error, false);
+    
+    res.status(500).json({
+      success: false,
+      message: "Error al eliminar el beneficiario",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+const deleteImage = async (filePath) => {
+
+    if (!filePath) return;
+  // Construct the full path to the uploads directory
+    const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
+    const fileName = path.basename(filePath); // Get just the filename
+    const fullPath = path.join(uploadsDir, fileName);
+
+    try {
+     // Check if file exists
+    await fs.access(fullPath, fs.constants.F_OK);
+    
+    // Delete the file
+    await fs.unlink(fullPath);
+    } catch (error) {
+      console.error('Error al eliminar la imagen:', error);
+    }
 }

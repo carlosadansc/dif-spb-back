@@ -23,8 +23,7 @@
     "mongoose": "^6.5.2",
     "mongoose-autopopulate": "^0.17.1",
     "multer": "^2.0.1",
-    "winston": "^3.17.0",
-    "xlsx": "^0.18.5"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "install": "^0.13.0",

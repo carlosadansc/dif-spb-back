@@ -41,4 +41,7 @@ router.get("/beneficiaries/by-delegations", UserMiddleware.verifyUser, Beneficia
 // GET beneficiarios por sexo
 router.get("/beneficiaries/by-sex", UserMiddleware.verifyUser, BeneficiaryController.getBeneficiariesBySex);
 
+// DELETE beneficiary and related data
+router.delete("/beneficiary/delete/:id", UserMiddleware.verifyAdmin, BeneficiaryController.deleteBeneficiaryWithAllRelatedData);
+
 module.exports = router;
