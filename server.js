@@ -26,7 +26,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 mongoose.set('strictQuery', false);
 
 // ROUTES
-app.get('/', (req, res) => res.json({ message: 'Welcome DIF Sistema Integral Padron de Apoyos API 2024' }))
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Welcome DIF Sistema Integral Padron de Apoyos API 2024' })
+})
 app.use(UserRoutes);
 app.use(BeneficiaryRoutes);
 app.use(ContributionItemRoutes);
