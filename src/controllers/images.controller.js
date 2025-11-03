@@ -8,7 +8,7 @@ const fs = require('fs').promises;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, 'uploads/photos/');
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -22,15 +22,15 @@ exports.uploadImage = (req, res) => {
 
   upload.single('image')(req, res, (err) => {
     if (err) {
-      logger.log("POST", "/upload/image", "unknown", errorCode.ERR0008.title, false);
-      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0008] });
+      logger.log("POST", "/upload/image", currentuser, errorCode.ERR0008.title, false);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ data: {}, errors: [errorCode.ERR0008, err.message] });
     }
     if (!req.file) {
       logger.log("POST", "/upload/image", currentuser, errorCode.ERR0007.title, false);
       return res.status(httpStatus.BAD_REQUEST).json({ data: {}, errors: [errorCode.ERR0007] });
     } 
     logger.log("POST", "/upload/image", currentuser, "File uploaded successfully");
-    return res.status(httpStatus.OK).json({ data: { message: 'File uploaded successfully', filePath: `/uploads/${req.file.filename}` }, errors: [] });
+    return res.status(httpStatus.OK).json({ data: { message: 'File uploaded successfully', filePath: `/uploads/photos/${req.file.filename}` }, errors: [] });
   });
 };
 
@@ -56,7 +56,7 @@ exports.deleteImage = async (req, res) => {
   }
   
   // Construct the full path to the uploads directory
-  const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
+  const uploadsDir = path.join(__dirname, '..', '..', 'uploads/photos/');
   const fileName = path.basename(filePath); // Get just the filename
   const fullPath = path.join(uploadsDir, fileName);
   
@@ -67,7 +67,7 @@ exports.deleteImage = async (req, res) => {
     // Delete the file
     await fs.unlink(fullPath);
     
-    logger.log("DELETE", "/image/delete", currentuser);
+    logger.log("DELETE", "/image/delete", currentuser, "File deleted successfully");
     return res.status(httpStatus.OK).json({ 
       data: { message: 'File deleted successfully' }, 
       errors: [] 

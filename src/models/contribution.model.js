@@ -25,6 +25,10 @@ const ContributionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Beneficiary",
     },
+    evidencePhoto:{
+      type: String,
+      required: false,
+    },
     comments: {
       type: String,
       required: false,
@@ -72,40 +76,30 @@ const ContributionSchema = new mongoose.Schema(
 
 // Pre-hook para generar el folio
 ContributionSchema.pre("save", async function (next) {
-  if (!this.isNew) return next(); // Solo para registros nuevos
+  if (!this.isNew) return next();
 
   try {
-    // Poblar el campo 'area' para obtener el documento completo
     const user = await mongoose.model("User").findById(this.createdBy).populate("area");
-    if (!user) {
-      return next(new Error("Usuario creador no encontrado"));
+    if (!user || !user.area || !user.area.name) {
+      return next(new Error("Usuario sin área asignada"));
     }
 
-    // Validar que el usuario tiene un área y que el área tiene un nombre
-    if (!user.area || !user.area.name) {
-      return next(new Error("El usuario no tiene un área asignada o el área no tiene nombre"));
-    }
+    const areaPrefix = user.area.name.substring(0, 3).toUpperCase();
+    const year = new Date().getFullYear();
 
-    const areaPrefix = user.area.name.substring(0, 3).toUpperCase(); // Ej: "Logística" → "LOG"
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-
-    // Contar contribuciones existentes en el mes/año para el área
+    // Contar TODAS las contribuciones del área en el año actual (incluyendo borradas)
+    // Esto garantiza que los folios nunca se repitan
     const count = await mongoose.model("Contribution").countDocuments({
-      folio: new RegExp(`^${areaPrefix}-${year}-${month}`),
+      folio: new RegExp(`^${areaPrefix}-${year}-`),
+      // NO filtrar por deleted, contar todos los registros
     });
 
-    this.folio = `${areaPrefix}-${year}-${month}-${String(count + 1).padStart(
-      3,
-      "0"
-    )}`;
+    this.folio = `${areaPrefix}-${year}-${String(count + 1).padStart(6, "0")}`;
     next();
   } catch (error) {
     next(error);
   }
 });
-
 // Índices
 ContributionSchema.index({ beneficiary: 1 });
 ContributionSchema.index({ contributionDate: -1 });

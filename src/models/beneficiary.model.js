@@ -83,6 +83,19 @@ const BeneficiarySchema = new mongoose.Schema(
     contributions: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Contribution" },
     ],
+    socioeconomicAssessments: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "SocioeconomicAssessment" },
+    ],
+
+    documents: [
+      { 
+        name: { type: String, required: false },
+        url: { type: String, required: false },
+        type: { type: String, required: false },
+        createdAt: { type: Date, required: false },
+        updatedAt: { type: Date, required: false },
+       }
+    ], 
 
     //Others
     active: { type: Boolean, required: false, default: true },

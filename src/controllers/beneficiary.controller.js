@@ -143,10 +143,9 @@ exports.getBeneficiaryById = (req, res) => {
 
 // GET beneficiaries count
 exports.getBeneficiariesCount = async (req, res) => {
+    const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
   try {
     const { year, month } = req.query;
-    const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
-
     let query = { deleted: false };
 
     if (year && month) {
@@ -451,10 +450,13 @@ exports.getBeneficiaryFamilyNames = async (req, res) => {
               _id: beneficiary.families.length + 1,
               name: `${beneficiary.spouseOrTutor.fullname}`,
             },
+            {
+              _id: beneficiary.families.length + 2,
+              name: `${beneficiary.name} ${beneficiary.fatherSurname} ${beneficiary.motherSurname}`,
+            }
           ]
         : []),
     ];
-
     logger.log("GET", `/beneficiary/${id}/family-names`, currentuser);
     return res.status(httpStatus.OK).send({ data: families, errors: [] });
   } catch (error) {

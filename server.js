@@ -14,6 +14,7 @@ const ContributionRoutes = require('./src/routes/contribution.routes');
 const ContributionItemCategoryRoutes = require('./src/routes/category.routes');
 const ImageRoutes = require('./src/routes/images.routes');
 const AreaRoutes = require('./src/routes/area.routes');
+const SocioeconomicAssessmentRoutes = require('./src/routes/socioeconomic_assessment.routes');
 
 
 const app = express();
@@ -37,6 +38,7 @@ app.use(ContributionItemCategoryRoutes);
 app.use(familyRoutes);
 app.use(ImageRoutes);
 app.use(AreaRoutes);
+app.use(SocioeconomicAssessmentRoutes);
 // app.use(EventRoutes);
 
 // MONGODB CONNECTION
