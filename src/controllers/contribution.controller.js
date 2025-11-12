@@ -16,6 +16,7 @@ exports.create = async (req, res) => {
     const {
       productOrServices,
       beneficiary,
+      evidencePhoto,
       comments,
       contributionDate,
       receiver,
@@ -24,6 +25,7 @@ exports.create = async (req, res) => {
     const contribution = new Contribution({
       productOrServices,
       beneficiary,
+      evidencePhoto,
       comments,
       contributionDate,
       receiver,
@@ -64,7 +66,7 @@ exports.getContributionsByBeneficiary = async (req, res) => {
       active: true,
     })
       .populate("createdBy", "name lastname position")
-      .lean(); // Usar lean() para obtener objetos JavaScript planos
+      .lean().sort({ createdAt: -1 }); // Usar lean() para obtener objetos JavaScript planos
 
     // Para cada contribución, procesamos sus productos/servicios
     for (const contribution of contributions) {
