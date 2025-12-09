@@ -24,7 +24,16 @@ const ContributionSchema = new mongoose.Schema(
     beneficiary: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Beneficiary",
-    },
+    }, // Solo si haveMultipleBeneficiaries es false 
+    beneficiaries: [
+      {
+        beneficiary: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Beneficiary",
+          autopopulate: true,
+        },
+      },
+    ], // Solo si haveMultipleBeneficiaries es true 
     evidencePhoto:{
       type: String,
       required: false,
@@ -46,6 +55,10 @@ const ContributionSchema = new mongoose.Schema(
       type: String,
       required: false,
       trim: true,
+    },
+    haveMultipleBeneficiaries: {
+      type: Boolean,
+      default: false,
     },
     active: {
       type: Boolean,

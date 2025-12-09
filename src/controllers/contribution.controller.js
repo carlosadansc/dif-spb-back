@@ -8,6 +8,7 @@ const logger = require("../utils/Logger");
 const httpStatus = require("../common/HttpStatusCodes");
 const errorCode = require("../common/ErroCodes");
 const GetDate = require("../utils/GetDate");
+const normalizeText = require("../utils/normalizedText");
 
 exports.create = async (req, res) => {
   const createdBy = tokenUtils.decodeToken(req.headers["authorization"]).id;
@@ -51,6 +52,31 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.getContribution = async (req, res) => {
+  const { id } = req.params;
+  const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
+  try {
+    const contribution = await Contribution.findById(id)
+      .populate("beneficiary", "curp name fatherSurname motherSurname") // Datos del beneficiario (individual)
+      .populate("beneficiaries.beneficiary", "curp name fatherSurname motherSurname") // Datos de beneficiarios (masivos)
+      .populate("createdBy", "name lastname position area") // Quién lo creó
+      .populate({
+        path: "productOrServices.productOrService", // Detalles del producto
+        populate: {
+          path: "category",
+          select: "name label color" // Detalles de la categoría
+        }
+      })
+      .lean(); // Convertir a objeto JS puro
+
+    logger.log("GET", "/contribution/get-contribution", currentuser);
+    res.status(httpStatus.OK).send({ data: contribution, errors: [] });
+  } catch (error) {
+    logger.log("GET", "/contribution/get-contribution", currentuser, false);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ data: {}, errors: [errorCode.ERR0000, error.message] });
+  }
+};
+
 // GET contribution by Beneficiary
 exports.getContributionsByBeneficiary = async (req, res) => {
   const { id } = req.params;
@@ -60,8 +86,12 @@ exports.getContributionsByBeneficiary = async (req, res) => {
 
   try {
     // Obtenemos las contribuciones con sus productOrServices
+    // Usamos $or para buscar tanto en beneficiary (individuales) como en beneficiaries (masivos)
     const contributions = await Contribution.find({
-      beneficiary: id,
+      $or: [
+        { beneficiary: id }, // Contribuciones individuales
+        { "beneficiaries.beneficiary": id } // Contribuciones masivas
+      ],
       deleted: false,
       active: true,
     })
@@ -109,8 +139,12 @@ exports.getContributionsByBeneficiaryForExport = async (req, res) => {
   const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
 
   try {
+    // Usamos $or para buscar tanto en beneficiary (individuales) como en beneficiaries (masivos)
     const contributions = await Contribution.find({
-      beneficiary: id,
+      $or: [
+        { beneficiary: id }, // Contribuciones individuales
+        { "beneficiaries.beneficiary": id } // Contribuciones masivas
+      ],
       deleted: false,
       active: true,
     })
@@ -534,6 +568,262 @@ exports.getAllContributions = async (req, res) => {
     return res.status(httpStatus.OK).send({ data: rows, errors: [] });
   } catch (error) {
     logger.log("GET", "/contributions/get-all", currentuser, error, false);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      data: {},
+      errors: [errorCode.ERR0000, error.message || "Error desconocido"],
+    });
+  }
+};
+
+exports.createContributionsWithMultipleBeneficiaries = async (req, res) => {
+  const createdBy = tokenUtils.decodeToken(req.headers["authorization"]).id;
+  const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
+
+  try {
+    const {
+      productOrServices,
+      beneficiaries, // Array de { curp, name, fatherSurname, motherSurname }
+      evidencePhoto,
+      comments,
+      contributionDate,
+      receiver,
+    } = req.body;
+
+    // Validaciones básicas
+    if (!beneficiaries || !Array.isArray(beneficiaries) || beneficiaries.length === 0) {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        data: {},
+        errors: [errorCode.ERR0000, "Debe proporcionar al menos un beneficiario"],
+      });
+    }
+
+    // Comentario especial para jornadas masivas
+    const massiveEventComment = `${comments || ""}\n\n[JORNADA MASIVA] ESTE APOYO FUE ENTREGADO COMO PARTE DE UNA JORNADA DE APOYO MASIVO CON ${beneficiaries.length} BENEFICIARIOS.`.trim();
+
+    // Arrays para almacenar resultados
+    const processedBeneficiaries = [];
+    const beneficiariesForContribution = [];
+    const errors = [];
+
+    // Procesar cada beneficiario
+    for (const beneficiaryData of beneficiaries) {
+      try {
+        const { curp, name, fatherSurname, motherSurname } = beneficiaryData;
+
+        // Validar datos mínimos
+        if (!curp || !name || !fatherSurname) {
+          errors.push({
+            curp: curp || "SIN_CURP",
+            error: "Faltan datos obligatorios (CURP, nombre o apellido paterno)",
+          });
+          continue;
+        }
+
+        // Normalizar datos del beneficiario
+        const normalizedCurp = normalizeText(curp.trim());
+        const normalizedName = normalizeText(name.trim());
+        const normalizedFatherSurname = normalizeText(fatherSurname.trim());
+        const normalizedMotherSurname = motherSurname ? normalizeText(motherSurname.trim()) : "";
+
+        // Buscar beneficiario existente por CURP
+        let beneficiary = await Beneficiary.findOne({ curp: normalizedCurp });
+
+        if (beneficiary) {
+          // Beneficiario existente
+          processedBeneficiaries.push(beneficiary);
+          beneficiariesForContribution.push({ beneficiary: beneficiary._id });
+        } else {
+          // Crear nuevo beneficiario con datos genéricos
+          beneficiary = new Beneficiary({
+            curp: normalizedCurp,
+            name: normalizedName,
+            fatherSurname: normalizedFatherSurname,
+            motherSurname: normalizedMotherSurname,
+            // Datos genéricos mínimos requeridos
+            age: 0, // Edad desconocida
+            sex: "NO ESPECIFICADO",
+            phone: "0000000000", // Teléfono genérico
+            comments: "BENEFICIARIO CREADO EN JORNADA MASIVA. DATOS INCOMPLETOS.",
+            createdBy: createdBy,
+          });
+
+          await beneficiary.save();
+          processedBeneficiaries.push(beneficiary);
+          beneficiariesForContribution.push({ beneficiary: beneficiary._id });
+        }
+
+      } catch (beneficiaryError) {
+        errors.push({
+          curp: beneficiaryData.curp || "DESCONOCIDO",
+          error: beneficiaryError.message,
+        });
+      }
+    }
+
+    // Crear UNA SOLA contribución masiva con todos los beneficiarios
+    const massiveContribution = new Contribution({
+      productOrServices, // Cantidad total (ej: 150)
+      beneficiaries: beneficiariesForContribution, // Array de todos los beneficiarios
+      evidencePhoto,
+      comments: massiveEventComment,
+      contributionDate,
+      receiver,
+      createdBy,
+      createdAt: GetDate.date(),
+      haveMultipleBeneficiaries: true,
+    });
+
+    await massiveContribution.save();
+
+    // Actualizar el array de contribuciones de cada beneficiario
+    for (const beneficiary of processedBeneficiaries) {
+      beneficiary.contributions.push(massiveContribution._id);
+      await Beneficiary.findByIdAndUpdate(beneficiary._id, {
+        contributions: beneficiary.contributions,
+      });
+    }
+
+    // Preparar respuesta
+    const response = {
+      totalBeneficiaries: beneficiaries.length,
+      processedSuccessfully: processedBeneficiaries.length,
+      failedBeneficiaries: errors.length,
+      errors: errors.length > 0 ? errors : [],
+      contribution: massiveContribution,
+    };
+
+    logger.log("POST", "/contribution/create-multiple", currentuser);
+    res.status(httpStatus.OK).json({ 
+      data: response, 
+      errors: errors.length > 0 ? ["Algunos beneficiarios no pudieron procesarse"] : [] 
+    });
+
+  } catch (err) {
+    logger.log("POST", "/contribution/create-multiple", currentuser, err, false);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ 
+      data: {}, 
+      errors: [errorCode.ERR0000, err.message] 
+    });
+  }
+};
+
+exports.getMassiveContributions = async (req, res) => {
+  const currentuser = tokenUtils.decodeToken(req.headers["authorization"]).username;
+  try {
+    const { 
+      page = 1, 
+      limit = 10, 
+      sort = "createdAt", 
+      order = "desc", 
+      search = "", 
+      startDate, 
+      endDate, 
+      category 
+    } = req.query;
+
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Construir filtro inicial
+    let matchStage = {
+      haveMultipleBeneficiaries: true,
+      active: true,
+      deleted: false,
+    };
+
+    // Filtro de búsqueda (search)
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      matchStage.$or = [
+        { folio: searchRegex },
+        { comments: searchRegex },
+        { receiver: searchRegex }
+      ];
+    }
+
+    // Filtro de rango de fechas
+    if (startDate || endDate) {
+      matchStage.contributionDate = {};
+      if (startDate) {
+        matchStage.contributionDate.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        const endD = new Date(endDate);
+        endD.setHours(23, 59, 59, 999);
+        matchStage.contributionDate.$lte = endD;
+      }
+    }
+
+    // Pipeline de agregación para poder filtrar por categoría
+    if (!category) {
+      const contributions = await Contribution.find(matchStage)
+        .sort({ [sort]: order === "asc" ? 1 : -1 })
+        .skip(skip)
+        .limit(limitNum)
+        .populate("createdBy", "name lastname position area")
+        .populate({
+          path: "productOrServices.productOrService",
+          populate: { path: "category", model: "Category" }
+        })
+        .populate({
+            path: 'beneficiaries.beneficiary',
+            select: 'name curp' 
+        })
+        .lean();
+
+      const total = await Contribution.countDocuments(matchStage);
+
+      logger.log("GET", "/contribution/massive-contributions", currentuser);
+      return res.status(httpStatus.OK).send({ 
+        data: contributions, 
+        pagination: {
+          total,
+          page: pageNum,
+          limit: limitNum,
+          totalPages: Math.ceil(total / limitNum)
+        },
+        errors: [] 
+      });
+    }
+
+    // Si HAY filtro de categoría
+    const productsInCategory = await mongoose.model("ProductOrService").find({ category }).select("_id");
+    const productIds = productsInCategory.map(p => p._id);
+
+    matchStage["productOrServices.productOrService"] = { $in: productIds };
+
+    const contributions = await Contribution.find(matchStage)
+      .sort({ [sort]: order === "asc" ? 1 : -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .populate("createdBy", "name lastname position area")
+      .populate({
+        path: "productOrServices.productOrService",
+        populate: { path: "category", model: "Category" }
+      })
+      .populate({
+          path: 'beneficiaries.beneficiary',
+          select: 'name curp'
+      })
+      .lean();
+
+    const total = await Contribution.countDocuments(matchStage);
+
+    logger.log("GET", "/contribution/massive-contributions-filtered", currentuser);
+    res.status(httpStatus.OK).send({ 
+      data: contributions, 
+      pagination: {
+        total,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(total / limitNum)
+      },
+      errors: [] 
+    });
+
+  } catch (error) {
+    logger.log("GET", "/contribution/massive-contributions", currentuser, error, false);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
       data: {},
       errors: [errorCode.ERR0000, error.message || "Error desconocido"],
