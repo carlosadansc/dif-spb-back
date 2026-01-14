@@ -21,6 +21,7 @@ exports.create = async (req, res) => {
       comments,
       contributionDate,
       receiver,
+      donor,
     } = req.body;
 
     const contribution = new Contribution({
@@ -30,6 +31,7 @@ exports.create = async (req, res) => {
       comments,
       contributionDate,
       receiver,
+      donor,
       createdBy,
       createdAt: GetDate.date(),
     });
@@ -587,6 +589,7 @@ exports.createContributionsWithMultipleBeneficiaries = async (req, res) => {
       comments,
       contributionDate,
       receiver,
+      donor,
     } = req.body;
 
     // Validaciones básicas
@@ -668,6 +671,7 @@ exports.createContributionsWithMultipleBeneficiaries = async (req, res) => {
       comments: massiveEventComment,
       contributionDate,
       receiver,
+      donor,
       createdBy,
       createdAt: GetDate.date(),
       haveMultipleBeneficiaries: true,

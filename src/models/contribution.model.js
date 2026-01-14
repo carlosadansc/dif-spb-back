@@ -56,6 +56,11 @@ const ContributionSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    donor: {
+      type: String,
+      required: false,
+      trim: true,
+    },
     haveMultipleBeneficiaries: {
       type: Boolean,
       default: false,
